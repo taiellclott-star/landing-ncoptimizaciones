@@ -683,8 +683,8 @@ footer{padding:56px 0 32px;}
             <div class="plan-chip" id="planChip">Plan: sin elegir aún</div>
             <div class="field-grid">
               <div class="field full"><label for="nombreCompleto">Nombre y apellido</label><input id="nombreCompleto" name="nombreCompleto" autocomplete="name" required></div>
-              <div class="field"><label for="correo">Correo</label><input id="correo" type="email" name="correo" autocomplete="email" required></div>
-              <div class="field"><label for="whatsapp">Número</label><input id="whatsapp" type="tel" name="whatsapp" pattern="^[+0-9\s-]{8,15}$" placeholder="11 2345 6789" autocomplete="tel" required></div>
+              <div class="field"><label for="correo">Correo</label><input id="correo" type="email" name="correo" autocomplete="email" maxlength="254" required></div>
+              <div class="field"><label for="whatsapp">Número</label><input id="whatsapp" type="tel" name="whatsapp" pattern="^[+0-9\s-]{8,15}$" maxlength="20" placeholder="11 2345 6789" autocomplete="tel" required></div>
               <div class="field full"><label for="discord">Discord</label><input id="discord" name="discord" placeholder="usuario#0000" autocomplete="off"></div>
               <div class="field full">
                 <label for="plan">Plan elegido</label>
@@ -863,6 +863,25 @@ footer{padding:56px 0 32px;}
   }
   cargarRecaptchaScript();
 
+  function sanitizarCampoCorreo(v){
+    var s = String(v || '').trim();
+    s = s.replace(/[\r\n\t\u0000-\u001f\u007f]/g, '');
+    s = s.replace(/[<>'"`]/g, '');
+    s = s.replace(/\s+/g, '');
+    if(s.length > 254) s = s.substring(0, 254);
+    return s;
+  }
+
+  function sanitizarCampoWhatsApp(v){
+    var s = String(v || '').trim();
+    s = s.replace(/[\r\n\t\u0000-\u001f\u007f]/g, '');
+    s = s.replace(/[<>'"`]/g, '');
+    s = s.replace(/[^\d+\-\s()]/g, '');
+    s = s.replace(/\s+/g, ' ').trim();
+    if(s.length > 20) s = s.substring(0, 20);
+    return s;
+  }
+
   // Genera un token de reCAPTCHA v3 para la acción indicada. Devuelve ''
   // si no hay site key configurada o si algo falla (el backend trata un
   // token vacío como sospechoso).
@@ -891,6 +910,10 @@ footer{padding:56px 0 32px;}
       return null;
     }
     try{
+      if(payload){
+        if(payload.correo !== undefined) payload.correo = sanitizarCampoCorreo(payload.correo);
+        if(payload.whatsapp !== undefined) payload.whatsapp = sanitizarCampoWhatsApp(payload.whatsapp);
+      }
       var res = await fetch(SHEETS_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -1198,8 +1221,8 @@ footer{padding:56px 0 32px;}
     if(current === 1){
       RESERVA_INFO = {
         nombreCompleto: (document.getElementById('nombreCompleto') || {}).value || '',
-        correo: (document.getElementById('correo') || {}).value || '',
-        whatsapp: (document.getElementById('whatsapp') || {}).value || '',
+        correo: sanitizarCampoCorreo((document.getElementById('correo') || {}).value || ''),
+        whatsapp: sanitizarCampoWhatsApp((document.getElementById('whatsapp') || {}).value || ''),
         discord: (document.getElementById('discord') || {}).value || ''
       };
     }

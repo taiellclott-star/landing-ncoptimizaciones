@@ -292,6 +292,8 @@ mensaje de error correspondiente.
 - Accesibilidad: `aria-live` en mensajes de error y títulos de paso,
   `autocomplete` en campos de nombre/correo/teléfono (agregado
   2026-08-03).
+- Sanitización y validación de `correo` y `whatsapp` en frontend y
+  backend antes de enviarlos, guardarlos o incluirlos en notificaciones.
 - SEO/social: JSON-LD, Open Graph, Twitter Card. `og-image.jpg`
   rediseñado con la marca real (2026-08-03).
 

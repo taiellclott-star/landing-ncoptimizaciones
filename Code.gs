@@ -16,6 +16,7 @@ var COL_HORARIO = 7;
 var PLAN_DURATION = { 'Oficina': 20, 'Gaming': 30, 'Gaming Plus': 45 };
 var PLANES_VALIDOS = ['Oficina', 'Gaming', 'Gaming Plus'];
 var REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var REGEX_WHATSAPP = /^\+?[0-9\s()-]{8,15}$/;
 var REGEX_FECHA = /^\d{4}-\d{2}-\d{2}$/;
 var REGEX_HORARIO = /^\d{1,2}:\d{2}$/;
 
@@ -191,7 +192,7 @@ function verificarRecaptcha(token) {
 // Límite simple de frecuencia: máximo 3 solicitudes por correo/whatsapp
 // cada 10 minutos, usando el cache del script (no persiste en la planilla).
 function excedeFrecuencia(data) {
-  var clave = String(data.correo || data.whatsapp || '').trim().toLowerCase();
+  var clave = String(sanitizarCorreo(data.correo) || sanitizarWhatsApp(data.whatsapp) || '').trim().toLowerCase();
   if (!clave) return false;
 
   var cache = CacheService.getScriptCache();
@@ -205,6 +206,9 @@ function excedeFrecuencia(data) {
 }
 
 function validarReserva(data) {
+  data.correo = sanitizarCorreo(data.correo);
+  data.whatsapp = sanitizarWhatsApp(data.whatsapp);
+
   if (!String(data.nombreCompleto || '').trim()) return 'Falta el nombre completo.';
   if (!String(data.correo || '').trim()) return 'Falta el correo.';
   if (!String(data.whatsapp || '').trim()) return 'Falta el WhatsApp.';
@@ -214,6 +218,7 @@ function validarReserva(data) {
 
   if (PLANES_VALIDOS.indexOf(data.plan) === -1) return 'El plan elegido no es válido.';
   if (!REGEX_EMAIL.test(String(data.correo).trim())) return 'El correo no tiene un formato válido.';
+  if (!REGEX_WHATSAPP.test(String(data.whatsapp).trim())) return 'El WhatsApp no tiene un formato válido.';
   if (!REGEX_FECHA.test(String(data.fecha).trim())) return 'La fecha no tiene el formato esperado (YYYY-MM-DD).';
   if (!REGEX_HORARIO.test(String(data.horario).trim())) return 'El horario no tiene el formato esperado (HH:MM).';
 
@@ -240,6 +245,25 @@ function sanitizarTexto(v, maxLen) {
   var s = String(v || '').trim();
   if (maxLen && s.length > maxLen) s = s.substring(0, maxLen);
   if (/^[=+\-@]/.test(s)) s = "'" + s;
+  return s;
+}
+
+function sanitizarCorreo(v) {
+  var s = String(v || '').trim();
+  s = s.replace(/[\r\n\t\u0000-\u001f\u007f]/g, '');
+  s = s.replace(/[<>'"`]/g, '');
+  s = s.replace(/\s+/g, '');
+  if (s.length > 254) s = s.substring(0, 254);
+  return s;
+}
+
+function sanitizarWhatsApp(v) {
+  var s = String(v || '').trim();
+  s = s.replace(/[\r\n\t\u0000-\u001f\u007f]/g, '');
+  s = s.replace(/[<>'"`]/g, '');
+  s = s.replace(/[^\d+\-\s()]/g, '');
+  s = s.replace(/\s+/g, ' ').trim();
+  if (s.length > 20) s = s.substring(0, 20);
   return s;
 }
 
@@ -319,8 +343,8 @@ function guardarReserva(ss, data) {
   sheet.appendRow([
     new Date(),
     sanitizarTexto(data.nombreCompleto, 200),
-    data.correo || '',
-    data.whatsapp || '',
+    sanitizarCorreo(data.correo),
+    sanitizarWhatsApp(data.whatsapp),
     sanitizarTexto(data.discord, 200),
     data.plan || '',
     data.fecha || '',
@@ -337,7 +361,7 @@ function guardarDatosExtra(ss, data) {
   }
   sheet.appendRow([
     new Date(),
-    data.correo || '',
+    sanitizarCorreo(data.correo),
     sanitizarTexto(data.nombreCompleto, 200),
     sanitizarTexto(data.pais, 200),
     data.edad || '',
@@ -359,8 +383,8 @@ function enviarNotificacion(data) {
       asunto = '🎮 Nueva reserva: ' + (data.nombreCompleto || 'Sin nombre') + ' — ' + (data.plan || '');
       cuerpo =
         'Nombre: ' + (data.nombreCompleto || '') + '\n' +
-        'Correo: ' + (data.correo || '') + '\n' +
-        'WhatsApp: ' + (data.whatsapp || '') + '\n' +
+        'Correo: ' + sanitizarCorreo(data.correo) + '\n' +
+        'WhatsApp: ' + sanitizarWhatsApp(data.whatsapp) + '\n' +
         'Discord: ' + (data.discord || '') + '\n' +
         'Plan: ' + (data.plan || '') + '\n' +
         'Fecha: ' + (data.fecha || '') + '\n' +
@@ -370,7 +394,7 @@ function enviarNotificacion(data) {
     } else if (data.type === 'extra') {
       asunto = '📋 Datos extra: ' + (data.nombreCompleto || data.correo || 'Sin nombre');
       cuerpo =
-        'Correo: ' + (data.correo || '') + '\n' +
+        'Correo: ' + sanitizarCorreo(data.correo) + '\n' +
         'Nombre: ' + (data.nombreCompleto || '') + '\n' +
         'País: ' + (data.pais || '') + '\n' +
         'Edad: ' + (data.edad || '') + '\n' +

@@ -5,6 +5,23 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-03 — Sanitización de correo y WhatsApp
+
+**Archivos:** `index.html`, `Code.gs`, `context.md`
+
+**Qué cambió:** se agregó sanitización y límites de longitud a los campos
+`correo` y `whatsapp` en el frontend y en el backend antes de enviarlos,
+guardarlos o incluirlos en correos de notificación.
+
+**Por qué:** cerrar los hallazgos críticos de seguridad de la Etapa 0
+relacionados con valores sin limpiar que podían llegar a la planilla y a
+las notificaciones.
+
+**Impacto:** bajo riesgo; mejora la seguridad del flujo de reserva sin
+cambiar la experiencia del usuario.
+
+---
+
 ## 2026-08-03 — Documentación inicial del proyecto
 
 **Archivos:** `context.md` (nuevo), `CHANGELOG.md` (nuevo)
