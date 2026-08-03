@@ -146,9 +146,11 @@
     try{
       videoEl.style.display = 'none';
       var fallback = document.getElementById('videoFallback');
-      if(fallback) fallback.style.display = 'flex';
       var frame = document.getElementById('videoFrame');
+      var section = document.getElementById('resultados');
+      if(fallback) fallback.style.display = 'flex';
       if(frame) frame.style.display = 'none';
+      if(section) section.style.display = 'none';
     }catch(e){ console.error('Error mostrando fallback de video', e); }
   };
 
@@ -157,22 +159,33 @@
       var frame = document.getElementById('videoFrame');
       var videoEl = document.getElementById('resultadosVideo');
       var fallback = document.getElementById('videoFallback');
+      var section = document.getElementById('resultados');
       if(!frame || !videoEl) return;
       var src = videoEl.getAttribute('src') || (videoEl.querySelector('source') ? videoEl.querySelector('source').getAttribute('src') : '');
-      if(!src){ frame.style.display = 'none'; return; }
+      if(!src){
+        if(frame) frame.style.display = 'none';
+        if(section) section.style.display = 'none';
+        return;
+      }
       if(src.indexOf('video-resultados.mp4') === -1 && src.indexOf('placeholder') === -1){
         frame.style.display = '';
         if(fallback) fallback.style.display = 'none';
+        if(section) section.style.display = '';
         return;
       }
       fetch(src, { method: 'HEAD' }).then(function(res){
         if(res.ok){
           frame.style.display = '';
           if(fallback) fallback.style.display = 'none';
+          if(section) section.style.display = '';
         } else {
           frame.style.display = 'none';
+          if(section) section.style.display = 'none';
         }
-      }).catch(function(){ frame.style.display = 'none'; });
+      }).catch(function(){
+        frame.style.display = 'none';
+        if(section) section.style.display = 'none';
+      });
     }catch(e){ console.error('Error verificando video real', e); }
   }
 
@@ -489,7 +502,8 @@
         nombreCompleto: (document.getElementById('nombreCompleto') || {}).value || '',
         correo: sanitizarCampoCorreo((document.getElementById('correo') || {}).value || ''),
         whatsapp: sanitizarCampoWhatsApp((document.getElementById('whatsapp') || {}).value || ''),
-        discord: (document.getElementById('discord') || {}).value || ''
+        discord: (document.getElementById('discord') || {}).value || '',
+        instagram: (document.getElementById('instagram') || {}).value || ''
       };
     }
     var chip = document.getElementById('planChip');
@@ -547,6 +561,7 @@
         correo: RESERVA_INFO.correo || '',
         whatsapp: RESERVA_INFO.whatsapp || '',
         discord: RESERVA_INFO.discord || '',
+        instagram: RESERVA_INFO.instagram || '',
         plan: planName,
         fecha: fecha,
         horario: horario,

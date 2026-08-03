@@ -131,7 +131,7 @@
   </section>
 
   <!-- RESULTADOS -->
-  <section class="section" id="resultados">
+  <section class="section" id="resultados" style="display:none;">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">La prueba</span>
@@ -417,6 +417,7 @@
               <div class="field full"><label for="nombreCompleto">Nombre y apellido</label><input id="nombreCompleto" name="nombreCompleto" autocomplete="name" required></div>
               <div class="field"><label for="correo">Correo</label><input id="correo" type="email" name="correo" autocomplete="email" maxlength="254" required></div>
               <div class="field"><label for="whatsapp">Número</label><input id="whatsapp" type="tel" name="whatsapp" pattern="^[+0-9\s-]{8,15}$" maxlength="20" placeholder="11 2345 6789" autocomplete="tel" required></div>
+              <div class="field full"><label for="instagram">Usuario de Instagram</label><input id="instagram" name="instagram" placeholder="@usuario" autocomplete="off" required></div>
               <div class="field full"><label for="discord">Discord</label><input id="discord" name="discord" placeholder="usuario#0000" autocomplete="off"></div>
               <div class="field full">
                 <label for="plan">Plan elegido</label>
@@ -459,7 +460,7 @@
           <!-- STEP 3 -->
           <div class="form-step" data-step="3">
             <div class="step-label">Paso 3 de 4</div>
-            <h3 aria-live="polite">Pago por Mercado Pago</h3>
+            <h3 aria-live="polite">Pago por transferencia</h3>
             <div class="pay-box">
               <span style="font-size:13px;color:var(--muted);">Monto a transferir</span>
               <div class="alias" id="montoText">—</div>

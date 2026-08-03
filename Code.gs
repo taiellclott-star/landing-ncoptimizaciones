@@ -4,11 +4,11 @@ var MAIL_NOTIFICACION = 'taiellclott@gmail.com,taieljuega@gmail.com'; // separad
 // Columnas en la pestaña "Reservas", en el mismo orden en que las escribe
 // guardarReserva() más abajo:
 // 0=timestamp, 1=nombreCompleto, 2=correo, 3=whatsapp, 4=discord,
-// 5=plan, 6=fecha, 7=horario, 8=comentarios, 9=comoMeEncontraste,
-// 10=referido, 11=comprobanteUrl
-var COL_PLAN = 5;
-var COL_FECHA = 6;
-var COL_HORARIO = 7;
+// 5=instagram, 6=plan, 7=fecha, 8=horario, 9=comentarios,
+// 10=comoMeEncontraste, 11=referido, 12=comprobanteUrl
+var COL_PLAN = 6;
+var COL_FECHA = 7;
+var COL_HORARIO = 8;
 
 // ⚠️ Si cambiás esto, cambiá también PLAN_DURATION en index.html (línea ~938).
 // doGet() devuelve este mismo objeto en la respuesta (campo planDuration) para
@@ -279,6 +279,7 @@ function validarReserva(data) {
   if (!String(data.nombreCompleto || '').trim()) return 'Falta el nombre completo.';
   if (!String(data.correo || '').trim()) return 'Falta el correo.';
   if (!String(data.whatsapp || '').trim()) return 'Falta el WhatsApp.';
+  if (!String(data.instagram || '').trim()) return 'Falta el usuario de Instagram.';
   if (!String(data.plan || '').trim()) return 'Falta el plan.';
   if (!String(data.fecha || '').trim()) return 'Falta la fecha.';
   if (!String(data.horario || '').trim()) return 'Falta el horario.';
@@ -413,6 +414,7 @@ function guardarReserva(ss, data) {
     sanitizarCorreo(data.correo),
     sanitizarWhatsApp(data.whatsapp),
     sanitizarTexto(data.discord, 200),
+    sanitizarTexto(data.instagram, 200),
     data.plan || '',
     data.fecha || '',
     data.horario || '',
@@ -455,6 +457,7 @@ function enviarNotificacion(data) {
         'Correo: ' + sanitizarCorreo(data.correo) + '\n' +
         'WhatsApp: ' + sanitizarWhatsApp(data.whatsapp) + '\n' +
         'Discord: ' + (data.discord || '') + '\n' +
+        'Instagram: ' + (data.instagram || '') + '\n' +
         'Plan: ' + (data.plan || '') + '\n' +
         'Fecha: ' + (data.fecha || '') + '\n' +
         'Horario: ' + (data.horario || '') + '\n' +

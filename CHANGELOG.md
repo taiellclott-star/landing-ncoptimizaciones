@@ -5,6 +5,18 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-03 — Correcciones de confianza y formulario
+
+**Archivos:** `index.html`, `script.js`, `Code.gs`, `context.md`
+
+**Qué cambió:** se ajustó el texto del paso de pago a “transferencia”, se ocultó la sección de resultados cuando no hay video real disponible y se agregó el campo obligatorio “Usuario de Instagram” al formulario, con su flujo completo al backend.
+
+**Por qué:** corregir tres puntos que afectaban la confianza del proceso de reserva y la calidad de los datos que llegan a la planilla.
+
+**Impacto:** bajo riesgo; mejora la claridad del flujo y garantiza que las reservas lleguen con un canal de contacto adicional y consistente.
+
+---
+
 ## 2026-08-03 — Etapa 6: recordatorios automáticos y PWA básica
 
 **Archivos:** `Code.gs`, `index.html`, `manifest.json`, `service-worker.js`, `context.md`

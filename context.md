@@ -86,6 +86,7 @@ Google Sheets.
 
 ### `Code.gs`
 - Pertenece a **Google Apps Script**, no al frontend.
+- El flujo de reserva ahora exige también un usuario de Instagram como dato de contacto principal, y el campo se guarda en la planilla y se incluye en las notificaciones.
 - **No se despliega junto al sitio estático**: hay que copiar su
   contenido manualmente al editor de Apps Script del proyecto vinculado
   a la Google Sheet (`SPREADSHEET_ID` hardcodeado al inicio del archivo),
