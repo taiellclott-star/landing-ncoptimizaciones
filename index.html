@@ -24,7 +24,8 @@
 <meta name="twitter:title" content="NC Optimizaciones | Más FPS. Menos Input Lag. Más estabilidad.">
 <meta name="twitter:description" content="Optimización profesional de PC para gaming, 100% remota por AnyDesk.">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230A0C10'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%234FA8FF' text-anchor='middle'%3ENC%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -364,6 +365,12 @@ footer{padding:56px 0 32px;}
 .footer-col h4{font-size:13px;color:var(--muted);margin-bottom:14px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.06em;}
 .footer-col ul{display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--muted);}
 .footer-col a:hover{color:var(--accent);}
+.footer-contact-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;max-width:320px;}
+.footer-contact-card h4{font-size:16px;margin-bottom:8px;color:var(--text);}
+.footer-contact-card p{font-size:14px;color:var(--muted);margin-bottom:12px;}
+.footer-contact-list{display:flex;flex-wrap:wrap;gap:8px;}
+.footer-contact-list a{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-family:var(--font-mono);color:var(--muted);}
+.footer-contact-list a:hover{color:var(--accent);border-color:var(--accent);} 
 .footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--muted);font-size:13px;}
 
 /* Sticky mobile CTA */
@@ -431,9 +438,9 @@ footer{padding:56px 0 32px;}
         <p>Medimos tu PC antes de tocar nada y volvemos a medir al terminar. Los números quedan a la vista, en vivo, durante la sesión.</p>
       </div>
       <div class="results-grid results-grid-solo">
-        <div class="video-frame">
+        <div class="video-frame" id="videoFrame" style="display:none;">
           <!-- TODO: reemplazar el src de <source> por el video vertical (9:16) real, corto y en loop, sin audio necesario (autoplay va muted). Si preferís usar el embed oficial de TikTok en su lugar, reemplazá este <video> por el <blockquote class="tiktok-embed"> que genera TikTok y sumá su script embed.js. -->
-          <video class="results-video" autoplay muted loop playsinline aria-label="Antes y después de una optimización de PC" onerror="mostrarFallbackVideo(this)">
+          <video id="resultadosVideo" class="results-video" autoplay muted loop playsinline aria-label="Antes y después de una optimización de PC" onerror="mostrarFallbackVideo(this)">
             <source src="video-resultados.mp4" type="video/mp4">
           </video>
           <div class="video-fallback" id="videoFallback">
@@ -449,7 +456,7 @@ footer{padding:56px 0 32px;}
 
   <!-- TESTIMONIOS -->
   <!-- TODO: reemplazar las 4 imágenes placeholder por capturas reales de WhatsApp/Instagram (con permiso del cliente) antes de publicar. Completar también nombre y plan de cada uno. -->
-  <section class="section" id="testimonios">
+  <section class="section" id="testimonios" style="display:none;">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Lo que dicen</span>
@@ -801,7 +808,16 @@ footer{padding:56px 0 32px;}
     <div class="footer-grid">
       <div class="footer-col" style="max-width:280px;">
         <a href="#inicio" class="logo"><img class="logo-mark-img" src="assets/logo.png" alt="NC Optimizaciones" width="625" height="200"> NC OPTIMIZACIONES</a>
-        <p style="color:var(--muted);font-size:13px;margin-top:14px;">Optimización profesional y remota de PC con Windows. Más FPS, menos input lag, más estabilidad.</p>
+        <p style="color:var(--muted);font-size:13px;margin-top:14px;">Optimización profesional y remota de PC con Windows. Más FPS, menos input lag, más estabilidad. El servicio lo lleva Nico, con atención directa y seguimiento por Discord/WhatsApp.</p>
+      </div>
+      <div class="footer-contact-card">
+        <h4>Horario de atención</h4>
+        <p>Lunes a viernes: 18:00 a 22:00 hs.<br>Sábados y domingos: 13:00 a 18:00 hs.</p>
+        <div class="footer-contact-list">
+          <a href="https://ig.me/m/nicooptimizaciones" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://discord.gg/xsHuzzkU7R" target="_blank" rel="noopener">Discord</a>
+          <a href="https://wa.me/5491133222211" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -939,14 +955,63 @@ footer{padding:56px 0 32px;}
 
   // Si el <video> de #resultados no puede cargar el archivo (src placeholder
   // o archivo faltante), mostramos el fallback con el link a TikTok en su
-  // lugar, en vez de dejar un recuadro vacío o roto.
+  // lugar, en vez de dejar un recuadro vacío o roto. Si no hay contenido
+  // real cargado, el bloque completo se oculta para mantener el sitio limpio.
   window.mostrarFallbackVideo = function(videoEl){
     try{
       videoEl.style.display = 'none';
       var fallback = document.getElementById('videoFallback');
       if(fallback) fallback.style.display = 'flex';
+      var frame = document.getElementById('videoFrame');
+      if(frame) frame.style.display = 'none';
     }catch(e){ console.error('Error mostrando fallback de video', e); }
   };
+
+  function mostrarContenidoRealVideo(){
+    try{
+      var frame = document.getElementById('videoFrame');
+      var videoEl = document.getElementById('resultadosVideo');
+      var fallback = document.getElementById('videoFallback');
+      if(!frame || !videoEl) return;
+      var src = videoEl.getAttribute('src') || (videoEl.querySelector('source') ? videoEl.querySelector('source').getAttribute('src') : '');
+      if(!src){ frame.style.display = 'none'; return; }
+      if(src.indexOf('video-resultados.mp4') === -1 && src.indexOf('placeholder') === -1){
+        frame.style.display = '';
+        if(fallback) fallback.style.display = 'none';
+        return;
+      }
+      fetch(src, { method: 'HEAD' }).then(function(res){
+        if(res.ok){
+          frame.style.display = '';
+          if(fallback) fallback.style.display = 'none';
+        } else {
+          frame.style.display = 'none';
+        }
+      }).catch(function(){ frame.style.display = 'none'; });
+    }catch(e){ console.error('Error verificando video real', e); }
+  }
+
+  function mostrarContenidoRealTestimonios(){
+    try{
+      var section = document.getElementById('testimonios');
+      if(!section) return;
+      var cards = section.querySelectorAll('.testimonial-card');
+      var hasRealContent = false;
+      cards.forEach(function(card){
+        var isExplicitlyReal = card.getAttribute('data-testimonial-real') === 'true';
+        var nameEl = card.querySelector('.testimonial-name');
+        var imgEl = card.querySelector('img');
+        var name = nameEl ? nameEl.textContent.trim() : '';
+        var src = imgEl ? imgEl.getAttribute('src') || '' : '';
+        var hasRealName = !!name && name.indexOf('TODO') === -1 && name.length > 2;
+        var hasRealImage = !!src && src.indexOf('testimonio-') === -1 && src.indexOf('placeholder') === -1;
+        var isReal = isExplicitlyReal || (hasRealName && hasRealImage);
+        card.style.display = isReal ? '' : 'none';
+        if(isReal) hasRealContent = true;
+      });
+      section.style.display = hasRealContent ? '' : 'none';
+    }catch(e){ console.error('Error verificando testimonios reales', e); }
+  }
 
   try{ document.getElementById('year').textContent = new Date().getFullYear(); }catch(e){}
 
@@ -1142,6 +1207,8 @@ footer{padding:56px 0 32px;}
     }
 
     renderTurnosHoyBadge();
+    mostrarContenidoRealVideo();
+    mostrarContenidoRealTestimonios();
 
     // Contador opcional "+XX PCs optimizadas". Completá PCS_OPTIMIZADAS más
     // abajo SOLO con un número real y verificable; si queda en 0 el bloque
@@ -1285,6 +1352,8 @@ footer{padding:56px 0 32px;}
         fecha: fecha,
         horario: horario,
         comentarios: comentariosEl ? comentariosEl.value : '',
+        comoMeEncontraste: document.getElementById('comoMeEncontraste') ? document.getElementById('comoMeEncontraste').value : '',
+        referido: document.getElementById('referido') ? document.getElementById('referido').value : '',
         comprobanteBase64: COMPROBANTE_DATA ? COMPROBANTE_DATA.base64 : '',
         comprobanteName: COMPROBANTE_DATA ? COMPROBANTE_DATA.name : '',
         comprobanteType: COMPROBANTE_DATA ? COMPROBANTE_DATA.type : '',

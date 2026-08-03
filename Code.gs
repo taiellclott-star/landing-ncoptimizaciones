@@ -4,7 +4,8 @@ var MAIL_NOTIFICACION = 'taiellclott@gmail.com,taieljuega@gmail.com'; // separad
 // Columnas en la pestaña "Reservas", en el mismo orden en que las escribe
 // guardarReserva() más abajo:
 // 0=timestamp, 1=nombreCompleto, 2=correo, 3=whatsapp, 4=discord,
-// 5=plan, 6=fecha, 7=horario, 8=comentarios, 9=comprobanteUrl
+// 5=plan, 6=fecha, 7=horario, 8=comentarios, 9=comoMeEncontraste,
+// 10=referido, 11=comprobanteUrl
 var COL_PLAN = 5;
 var COL_FECHA = 6;
 var COL_HORARIO = 7;
@@ -350,6 +351,8 @@ function guardarReserva(ss, data) {
     data.fecha || '',
     data.horario || '',
     sanitizarTexto(data.comentarios, 1000),
+    sanitizarTexto(data.comoMeEncontraste, 100),
+    sanitizarTexto(data.referido, 200),
     comprobanteUrl
   ]);
 }
@@ -390,6 +393,8 @@ function enviarNotificacion(data) {
         'Fecha: ' + (data.fecha || '') + '\n' +
         'Horario: ' + (data.horario || '') + '\n' +
         'Comentarios: ' + (data.comentarios || '') + '\n' +
+        'Cómo me encontró: ' + (data.comoMeEncontraste || '') + '\n' +
+        'Referido / recomendación: ' + (data.referido || '') + '\n' +
         '\nRevisá el comprobante en la pestaña "Reservas" de la planilla.';
     } else if (data.type === 'extra') {
       asunto = '📋 Datos extra: ' + (data.nombreCompleto || data.correo || 'Sin nombre');
