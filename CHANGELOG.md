@@ -5,6 +5,21 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-03 — Sección legal básica en la landing
+
+**Archivos:** `index.html`, `context.md`
+
+**Qué cambió:** se agregó una sección visible de confianza legal con una
+aclaración breve sobre expectativas de rendimiento, una política de
+privacidad simple y una nota de términos/reprogramación.
+
+**Por qué:** cerrar objeciones comunes antes de que el usuario reserve,
+sin depender de una página legal separada aún.
+
+**Impacto:** bajo riesgo; mejora la percepción de confianza del sitio.
+
+---
+
 ## 2026-08-03 — Sanitización de correo y WhatsApp
 
 **Archivos:** `index.html`, `Code.gs`, `context.md`
