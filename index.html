@@ -45,8 +45,27 @@
   "provider": {
     "@type": "LocalBusiness",
     "name": "NC Optimizaciones",
-    "priceRange": "$18.000 - $45.000",
-    "areaServed": "AR"
+    "areaServed": "AR",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Oficina",
+        "priceCurrency": "ARS",
+        "price": 18000
+      },
+      {
+        "@type": "Offer",
+        "name": "Gaming",
+        "priceCurrency": "ARS",
+        "price": 25000
+      },
+      {
+        "@type": "Offer",
+        "name": "Gaming Plus",
+        "priceCurrency": "ARS",
+        "price": 45000
+      }
+    ]
   },
   "areaServed": {
     "@type": "Country",
@@ -67,6 +86,8 @@
     {"@type":"Question","name":"¿Cuánto tarda el proceso?","acceptedAnswer":{"@type":"Answer","text":"Depende del plan: Oficina entre 15 y 20 minutos, Gaming entre 15 y 30 minutos, y Gaming Plus entre 30 y 45 minutos."}},
     {"@type":"Question","name":"¿Qué pasa si no noto cambios?","acceptedAnswer":{"@type":"Answer","text":"Medimos benchmarks antes y después en la misma sesión, así ves los números en vivo, y lo revisamos juntos antes de cerrar."}},
     {"@type":"Question","name":"¿Hacés soporte después?","acceptedAnswer":{"@type":"Answer","text":"Sí, tenés soporte por WhatsApp o Discord si algo no anda como esperabas."}},
+    {"@type":"Question","name":"¿Qué pasa si mi comprobante tiene algún problema?","acceptedAnswer":{"@type":"Answer","text":"TODO: completar respuesta."}},
+    {"@type":"Question","name":"¿Emitís factura?","acceptedAnswer":{"@type":"Answer","text":"TODO: completar respuesta."}},
     {"@type":"Question","name":"¿Sirve para notebooks?","acceptedAnswer":{"@type":"Answer","text":"Sí, aunque en notebooks el margen de mejora puede ser menor por límites térmicos y de hardware."}}
   ]
 }
@@ -217,7 +238,7 @@
         <div class="plan" data-plan="Oficina" data-price="18000">
           <h3>Oficina</h3>
           <p class="for">Home office · Estudiantes · Empresas</p>
-          <div class="price">$18.000</div>
+          <div class="price">$18.000 <span style="font-size:13px;opacity:0.8;margin-left:6px;">ARS</span></div>
           <div class="plan-includes">Incluye</div>
           <ul>
             <li>✓ Limpieza de Windows</li>
@@ -235,7 +256,7 @@
           <span class="plan-tag">Más elegido</span>
           <h3>Gaming</h3>
           <p class="for">Todo Oficina, más rendimiento</p>
-          <div class="price">$25.000</div>
+          <div class="price">$25.000 <span style="font-size:13px;opacity:0.8;margin-left:6px;">ARS</span></div>
           <div class="plan-includes">Todo Oficina +</div>
           <ul>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Depuración Total del Sistema</strong><br><small>Eliminamos archivos temporales y caché acumulada para que todo corra más liviano.</small></span></li>
@@ -252,7 +273,7 @@
         <div class="plan" data-plan="Gaming Plus" data-price="45000">
           <h3>Gaming Plus</h3>
           <p class="for">Todo Gaming, más hardware</p>
-          <div class="price">$45.000</div>
+          <div class="price">$45.000 <span style="font-size:13px;opacity:0.8;margin-left:6px;">ARS</span></div>
           <div class="plan-includes">Todo Gaming +</div>
           <ul>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Incluye todo el Pack Gaming</strong></span></li>
@@ -339,6 +360,27 @@
     </div>
   </section>
 
+  <!-- QUIÉN TE ATIENDE -->
+  <section class="section" id="quien-te-atiende">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Quién te atiende</span>
+        <h2>Conocé a la persona detrás del servicio</h2>
+      </div>
+      <div class="legal-grid">
+        <article class="legal-card" style="display:grid;gap:18px;align-items:center;grid-template-columns:minmax(90px,120px)1fr;">
+          <img src="assets/logo.png" alt="Foto del responsable del servicio" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;border:1px solid var(--line);background:var(--panel);">
+          <div>
+            <h3 style="margin-bottom:8px;">TODO: completar bio</h3>
+            <p style="margin:0 0 8px 0;">TODO: completar bio</p>
+            <p style="margin:0 0 8px 0;">TODO: completar bio</p>
+            <p style="margin:0;">TODO: completar bio</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- FAQ -->
   <section class="section" id="faq">
     <div class="wrap">
@@ -354,6 +396,8 @@
         <details><summary>¿Cuánto tarda el proceso?</summary><p>Depende del plan: Oficina entre 15 y 20 minutos, Gaming entre 15 y 30 minutos, y Gaming Plus entre 30 y 45 minutos.</p></details>
         <details><summary>¿Qué pasa si no noto cambios?</summary><p>Medimos benchmarks antes y después en la misma sesión, así ves los números en vivo. Si algo no cierra, lo revisamos juntos antes de cerrar.</p></details>
         <details><summary>¿Hacés soporte después?</summary><p>Sí, tenés soporte por WhatsApp o Discord si algo no anda como esperabas.</p></details>
+        <details><summary>¿Qué pasa si mi comprobante tiene algún problema?</summary><p>TODO: completar respuesta.</p></details>
+        <details><summary>¿Emitís factura?</summary><p>TODO: completar respuesta.</p></details>
         <details><summary>¿Sirve para notebooks?</summary><p>Sí, aunque en notebooks el margen de mejora puede ser menor por límites térmicos y de hardware.</p></details>
       </div>
     </div>
@@ -373,7 +417,7 @@
         </article>
         <article class="legal-card">
           <h3>Política de privacidad</h3>
-          <p>Solo usamos tus datos para coordinar la sesión, validar el pago y responder por WhatsApp/Discord. No compartimos tus datos con terceros y los conservamos solo el tiempo necesario para gestionar el servicio.</p>
+          <p>Solo usamos tus datos para coordinar la sesión, validar el pago y responder por WhatsApp, Discord e Instagram. No compartimos tus datos con terceros y los conservamos solo el tiempo necesario para gestionar el servicio.</p>
         </article>
         <article class="legal-card">
           <h3>Términos y reprogramación</h3>
@@ -423,9 +467,9 @@
                 <label for="plan">Plan elegido</label>
                 <select id="plan" name="plan" required>
                   <option value="">Seleccioná un plan</option>
-                  <option value="Oficina">Oficina — $18.000</option>
-                  <option value="Gaming">Gaming — $25.000</option>
-                  <option value="Gaming Plus">Gaming Plus — $45.000</option>
+                  <option value="Oficina">Oficina — $18.000 ARS</option>
+                  <option value="Gaming">Gaming — $25.000 ARS</option>
+                  <option value="Gaming Plus">Gaming Plus — $45.000 ARS</option>
                 </select>
               </div>
             </div>
@@ -476,7 +520,13 @@
               <div class="error-msg" id="uploadFileError" aria-live="polite"></div>
             </label>
             <p class="upload-note">Por ahora la revisión de cada comprobante la hacemos a mano (estamos trabajando para automatizarla), así que puede demorar un rato — no hace falta que reenvíes ni nos escribas si no es instantáneo, ya te vamos a confirmar el turno.</p>
-            <div class="error-msg" data-error-for="3" aria-live="polite">Subí el comprobante para confirmar la reserva.</div>
+            <div class="field full" style="margin-top:18px;">
+              <label for="aceptaPrivacidad" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;line-height:1.5;">
+                <input id="aceptaPrivacidad" name="aceptaPrivacidad" type="checkbox" required style="margin-top:3px;flex-shrink:0;">
+                <span>Acepto la <a href="#legal" style="color:var(--accent);text-decoration:underline;">política de privacidad</a>.</span>
+              </label>
+            </div>
+            <div class="error-msg" data-error-for="3" aria-live="polite">Aceptá la política de privacidad para confirmar la reserva.</div>
             <div class="error-msg" id="sendErrorStep3" aria-live="polite">Hubo un problema al enviar el comprobante. Volvé a intentarlo en unos segundos; si el problema persiste, escribinos por <a href="https://discord.gg/xsHuzzkU7R" target="_blank" rel="noopener">Discord</a>.</div>
             <div class="form-nav">
               <button type="button" class="btn btn-ghost" onclick="prevStep(3)">Atrás</button>

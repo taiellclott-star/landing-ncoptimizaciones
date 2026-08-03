@@ -483,6 +483,12 @@
         ok = false;
       }
     }
+    if(n === 3){
+      var privacidadInput = document.getElementById('aceptaPrivacidad');
+      if(privacidadInput && !privacidadInput.checked){
+        ok = false;
+      }
+    }
     var errEl = document.querySelector('.error-msg[data-error-for="'+n+'"]');
     if(errEl){
       if(!ok && hasFormatError){
