@@ -54,8 +54,8 @@ Una vez que el negocio prospere, se piensa en:
 - Rehacer el sistema de toma de turnos actual, que hoy se percibe como
   "precario" (ver sección 6 y 7).
 - Comprar un dominio propio `.com` (hoy el sitio corre en un subdominio
-  gratuito de Cloudflare Workers).
-
+  gratuito de Cloudflare Workers).- Implementar recordatorios automáticos y un PWA para “agregar a inicio”
+en mobile (ya incorporados en esta etapa como base funcional).
 ---
 
 ## 2. Arquitectura del proyecto

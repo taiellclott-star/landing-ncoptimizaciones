@@ -41,6 +41,72 @@ function rangoAtencion(fecha){
 // tipo de archivo, así que se valida también acá.
 var TIPOS_COMPROBANTE_VALIDOS = ['image/jpeg', 'image/png', 'application/pdf'];
 
+function enviarRecordatoriosTurno() {
+  try {
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sheet = ss.getSheetByName('Reservas');
+    if (!sheet) return;
+
+    var values = sheet.getDataRange().getValues();
+    var ahora = new Date();
+    var ahoraMs = ahora.getTime();
+    var cache = CacheService.getScriptCache();
+
+    for (var i = 0; i < values.length; i++) {
+      var row = values[i];
+      if (!(row[0] instanceof Date)) continue;
+
+      var fecha = String(row[COL_FECHA] || '').trim();
+      var horario = String(row[COL_HORARIO] || '').trim();
+      if (!fecha || !horario) continue;
+
+      var reservaDate = new Date(fecha + 'T' + horario + ':00');
+      if (isNaN(reservaDate.getTime())) continue;
+
+      var diffMin = Math.round((reservaDate.getTime() - ahoraMs) / 60000);
+      if (diffMin < 0 || diffMin > 60) continue;
+
+      var cacheKey = 'reminder_' + String(row[0].getTime()) + '_' + fecha + '_' + horario + '_' + String(row[2] || '').trim().toLowerCase();
+      if (cache.get(cacheKey)) continue;
+
+      var nombre = String(row[1] || '').trim() || 'cliente';
+      var correo = String(row[2] || '').trim();
+      var plan = String(row[COL_PLAN] || '').trim();
+
+      if (!correo) continue;
+
+      var asunto = '⏰ Recordatorio de turno · NC Optimizaciones';
+      var cuerpo =
+        'Hola ' + nombre + ',\n\n' +
+        'Este es un recordatorio automático de tu turno para optimizar tu PC.\n' +
+        'Plan: ' + plan + '\n' +
+        'Fecha: ' + fecha + '\n' +
+        'Horario: ' + horario + '\n\n' +
+        'Te esperamos para la sesión. Si necesitás ajustar algo, respondé este mail o escribinos por Instagram DM.\n\n' +
+        'NC Optimizaciones';
+
+      MailApp.sendEmail(correo, asunto, cuerpo);
+      cache.put(cacheKey, 'sent', 7 * 24 * 60 * 60);
+    }
+  } catch (err) {
+    Logger.log('Error en enviarRecordatoriosTurno: ' + err);
+  }
+}
+
+function createReminderTrigger() {
+  var triggers = ScriptApp.getProjectTriggers();
+  var exists = triggers.some(function(t) {
+    return t.getHandlerFunction() === 'enviarRecordatoriosTurno';
+  });
+
+  if (!exists) {
+    ScriptApp.newTrigger('enviarRecordatoriosTurno')
+      .timeBased()
+      .everyMinutes(15)
+      .create();
+  }
+}
+
 function doGet(e) {
   var fecha = e && e.parameter ? e.parameter.fecha : null;
   var out = { turnos: [], planDuration: PLAN_DURATION };

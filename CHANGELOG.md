@@ -5,6 +5,23 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-03 — Etapa 6: recordatorios automáticos y PWA básica
+
+**Archivos:** `Code.gs`, `index.html`, `manifest.json`, `service-worker.js`, `context.md`
+
+**Qué cambió:** se añadió una función de Apps Script para enviar
+recordatorios por mail 1 hora antes del turno, junto con un trigger
+instalable desde el editor; además se incorporó un manifest PWA y un
+service worker para permitir “agregar a inicio” en mobile.
+
+**Por qué:** dejar preparadas dos mejoras grandes del roadmap sin
+romper el funcionamiento actual del sitio.
+
+**Impacto:** bajo riesgo; habilita la base para recordatorios y para la
+experiencia de instalación en dispositivos móviles.
+
+---
+
 ## 2026-08-03 — Etapa 5: botón flotante de Instagram y 404 propia
 
 **Archivos:** `index.html`, `404.html`, `context.md`
