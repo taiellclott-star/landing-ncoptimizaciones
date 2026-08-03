@@ -39,12 +39,12 @@ Windows a cambio de más rendimiento.
 1. El usuario descubre el servicio por **Instagram, TikTok o YouTube**,
    donde el dueño sube videos cortos / tips de optimización.
 2. Instagram es el canal central: es donde se espera el mayor flujo de
-   gente junto con TikTok.
+gente junto con TikTok, y el contacto por mensajes privados (DM) es el
+canal principal de atención.
 3. El interesado escribe por Instagram, o entra directamente a la
-   landing, gana confianza, y **reserva turno y paga desde ahí**.
-4. Coordinación de la sesión por WhatsApp/Discord y ejecución remota vía
-   AnyDesk.
-
+landing, gana confianza, y **reserva turno y paga desde ahí**.
+4. Coordinación de la sesión por Instagram DM/Discord y ejecución remota
+vía AnyDesk.
 ### Funcionalidades futuras (roadmap declarado por el dueño del negocio)
 Una vez que el negocio prospere, se piensa en:
 - Bot que responda mensajes automáticamente en redes sociales.

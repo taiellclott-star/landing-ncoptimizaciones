@@ -5,6 +5,24 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-03 — Etapa 5: botón flotante de Instagram y 404 propia
+
+**Archivos:** `index.html`, `404.html`, `context.md`
+
+**Qué cambió:** se agregó un botón flotante de Instagram en la esquina
+inferior, con estilo visual alineado a la marca y animación sutil al
+hover; además se creó una página 404 personalizada con acciones para
+volver al inicio o escribir por Instagram DM.
+
+**Por qué:** fortalecer la conversión y dejar el canal de contacto
+principal orientado a Instagram, incluso en escenarios de navegación o
+URLs inválidas.
+
+**Impacto:** mejora la experiencia de usuario y la conversión, sin
+cambiar la lógica del formulario ni el backend.
+
+---
+
 ## 2026-08-03 — Sección legal básica en la landing
 
 **Archivos:** `index.html`, `context.md`

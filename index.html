@@ -24,8 +24,11 @@
 <meta name="twitter:title" content="NC Optimizaciones | Más FPS. Menos Input Lag. Más estabilidad.">
 <meta name="twitter:description" content="Optimización profesional de PC para gaming, 100% remota por AnyDesk.">
 
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+<link rel="apple-touch-icon" href="assets/favicon-180.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -256,13 +259,16 @@ header{
 /* Botón flotante de contacto directo (Instagram) */
 .instagram-float{
   position:fixed;right:20px;bottom:20px;z-index:70;
-  width:56px;height:56px;border-radius:50%;color:#fff;
-  background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%);
-  display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px -6px rgba(0,0,0,0.5);
-  transition:transform .15s ease;
+  width:60px;height:60px;border-radius:50%;color:#fff;
+  border:1px solid rgba(255,255,255,0.22);
+  background:linear-gradient(135deg,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 14px 30px -10px rgba(0,0,0,0.55);
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-.instagram-float:hover{transform:scale(1.06);}
-@media (max-width:700px){.instagram-float{bottom:84px;right:16px;width:50px;height:50px;}}
+.instagram-float:hover{transform:translateY(-2px) scale(1.06);box-shadow:0 20px 34px -10px rgba(0,0,0,0.65);border-color:rgba(255,255,255,0.35);}
+.instagram-float:focus-visible{outline:2px solid var(--accent);outline-offset:4px;}
+@media (max-width:700px){.instagram-float{bottom:82px;right:14px;width:54px;height:54px;}}
 
 /* PLANES */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
@@ -380,9 +386,29 @@ footer{padding:56px 0 32px;}
   border-top:1px solid var(--line);padding:12px 20px;display:none;
 }
 @media (max-width:700px){.sticky-cta{display:block;}body{padding-bottom:68px;}}
+
+/* Cookie banner */
+.cookie-banner{
+  position:fixed;left:20px;right:20px;bottom:20px;z-index:80;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:0 20px 40px rgba(0,0,0,0.32);
+  padding:18px 20px;display:none;align-items:center;justify-content:space-between;gap:16px;
+  max-width:760px;margin:0 auto;
+}
+.cookie-banner p{color:var(--muted);font-size:14px;max-width:560px;}
+.cookie-actions{display:flex;gap:10px;flex-wrap:wrap;}
+@media (max-width:700px){.cookie-banner{flex-direction:column;align-items:flex-start;left:12px;right:12px;bottom:12px;}}
 </style>
 </head>
 <body>
+
+<div id="cookieBanner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Banner de consentimiento de cookies">
+  <p>Usamos cookies de análisis para entender cómo llega la gente al sitio. Podés aceptar o rechazar el uso de analytics.</p>
+  <div class="cookie-actions">
+    <button type="button" class="btn btn-ghost" id="cookieReject">Rechazar</button>
+    <button type="button" class="btn btn-primary" id="cookieAccept">Aceptar</button>
+  </div>
+</div>
 
 <header>
   <div class="wrap nav">
@@ -423,7 +449,7 @@ footer{padding:56px 0 32px;}
           <div class="hero-reqs-list">
             <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> AnyDesk instalado en la PC</span>
             <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Discord instalado en el celular y la PC</span>
-            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> WhatsApp a mano</span>
+            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Instagram DM listo para escribir</span>
           </div>
         </div>
       </div>
@@ -788,7 +814,7 @@ footer{padding:56px 0 32px;}
             <div class="confirm">
               <svg class="confirm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 3"/></svg>
               <h3 aria-live="polite">¡Recibimos tu comprobante!</h3>
-              <p>Ya llegó y está en cola para revisión. Hoy en día ese paso lo hacemos a mano (todavía no tenemos confirmación automática), así que no es instantáneo: te confirmamos el turno por WhatsApp dentro de nuestro horario de atención (18 a 22 hs entre semana, 13 a 18 hs fines de semana) — normalmente en poco tiempo dentro de ese rango. No hace falta que reenvíes ni vuelvas a escribir mientras tanto. Aprovechá para tener todo listo: descargá AnyDesk y sumate al Discord.</p>
+              <p>Ya llegó y está en cola para revisión. Hoy en día ese paso lo hacemos a mano (todavía no tenemos confirmación automática), así que no es instantáneo: te confirmamos el turno por Instagram DM dentro de nuestro horario de atención (18 a 22 hs entre semana, 13 a 18 hs fines de semana) — normalmente en poco tiempo dentro de ese rango. No hace falta que reenvíes ni vuelvas a escribir mientras tanto. Aprovechá para tener todo listo: descargá AnyDesk y sumate al Discord.</p>
               <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
                 <a href="https://anydesk.com/es/downloads" target="_blank" rel="noopener" class="btn btn-primary">Descargar AnyDesk</a>
                 <a href="https://discord.gg/xsHuzzkU7R" target="_blank" rel="noopener" class="btn btn-ghost">Unirme al Discord</a>
@@ -833,7 +859,7 @@ footer{padding:56px 0 32px;}
     <div class="footer-grid">
       <div class="footer-col" style="max-width:280px;">
         <a href="#inicio" class="logo"><img class="logo-mark-img" src="assets/logo.png" alt="NC Optimizaciones" width="625" height="200"> NC OPTIMIZACIONES</a>
-        <p style="color:var(--muted);font-size:13px;margin-top:14px;">Optimización profesional y remota de PC con Windows. Más FPS, menos input lag, más estabilidad. El servicio lo lleva Nico, con atención directa y seguimiento por Discord/WhatsApp.</p>
+        <p style="color:var(--muted);font-size:13px;margin-top:14px;">Optimización profesional y remota de PC con Windows. Más FPS, menos input lag, más estabilidad. El servicio lo lleva Nico, con atención directa y seguimiento por Discord e Instagram DM.</p>
       </div>
       <div class="footer-contact-card">
         <h4>Horario de atención</h4>
@@ -889,6 +915,41 @@ footer{padding:56px 0 32px;}
   // ==== CONEXIÓN A GOOGLE SHEETS ====
   // Pegá acá la URL de tu Web App de Google Apps Script (ver instrucciones que te pasé aparte).
   var SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyiizuzfiDQn8a7sDmgjyulZSefquJLMfrxvaZbP3rfpniEpK4TrUH3joIZ2Pupf7NL2A/exec';
+
+  var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+  var COOKIE_CONSENT_KEY = 'nc_cookie_consent';
+
+  function getCookieConsent(){
+    try{
+      var value = localStorage.getItem(COOKIE_CONSENT_KEY);
+      return value || '';
+    }catch(e){ return ''; }
+  }
+
+  function setCookieConsent(value){
+    try{ localStorage.setItem(COOKIE_CONSENT_KEY, value); }catch(e){}
+  }
+
+  function cargarGoogleAnalytics(){
+    if(!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID.indexOf('G-') === -1 || window.__gaLoaded) return;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+    document.head.appendChild(s);
+    window.__gaLoaded = true;
+  }
+
+  function aplicarConsentimiento(value){
+    setCookieConsent(value);
+    var banner = document.getElementById('cookieBanner');
+    if(banner) banner.style.display = 'none';
+    if(value === 'accepted') cargarGoogleAnalytics();
+  }
 
   // Pegá acá tu site key de reCAPTCHA v3 (la secret key correspondiente va
   // en Script Properties del Apps Script, no acá). Mientras diga
@@ -1219,6 +1280,20 @@ footer{padding:56px 0 32px;}
   }
 
   document.addEventListener('DOMContentLoaded', function(){
+    var consent = getCookieConsent();
+    var banner = document.getElementById('cookieBanner');
+    var acceptBtn = document.getElementById('cookieAccept');
+    var rejectBtn = document.getElementById('cookieReject');
+
+    if(acceptBtn){ acceptBtn.addEventListener('click', function(){ aplicarConsentimiento('accepted'); }); }
+    if(rejectBtn){ rejectBtn.addEventListener('click', function(){ aplicarConsentimiento('rejected'); }); }
+
+    if(!consent && banner){
+      banner.style.display = 'flex';
+    } else if(consent === 'accepted'){
+      cargarGoogleAnalytics();
+    }
+
     var fechaInput = document.getElementById('fecha');
     if(fechaInput){
       var today = new Date().toISOString().slice(0,10);

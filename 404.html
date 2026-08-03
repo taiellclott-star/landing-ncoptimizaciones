@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>404 · NC Optimizaciones</title>
+  <meta name="description" content="La página que buscás no existe. Volvé al inicio o escribí por Instagram DM.">
+  <meta name="theme-color" content="#0A0C10">
+  <link rel="canonical" href="https://www.ncoptimizaciones.com/404.html">
+  <style>
+    :root{
+      --bg:#0A0C10;
+      --panel:#12151B;
+      --panel-alt:#181C24;
+      --line:#242A33;
+      --accent:#4FA8FF;
+      --text:#EDEFF2;
+      --muted:#8A93A3;
+      --font-display:'Space Grotesk',sans-serif;
+      --font-body:'Inter',sans-serif;
+      --radius:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      min-height:100vh;
+      font-family:var(--font-body);
+      background:var(--bg);
+      color:var(--text);
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 42px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 42px);
+    }
+    .card{
+      width:min(100%, 620px);
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:40px 32px;
+      box-shadow:0 24px 60px rgba(0,0,0,0.28);
+    }
+    .eyebrow{
+      display:inline-block;
+      font-family:monospace;
+      font-size:12px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      color:var(--accent);
+      margin-bottom:14px;
+    }
+    h1{font-family:var(--font-display);font-size:clamp(28px,4vw,42px);line-height:1.08;margin-bottom:12px;}
+    p{color:var(--muted);font-size:16px;line-height:1.6;}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:13px 20px;border-radius:10px;border:1px solid transparent;
+      font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s ease, border-color .15s ease;
+    }
+    .btn:hover{transform:translateY(-2px);}
+    .btn-primary{background:var(--accent);color:#081017;border-color:var(--accent);}
+    .btn-ghost{background:transparent;border-color:var(--line);color:var(--text);} 
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent);} 
+    .mini{margin-top:18px;font-size:13px;color:var(--muted);} 
+    .mini a{color:var(--accent);} 
+    @media (max-width:640px){.card{padding:28px 22px;}.actions{flex-direction:column;}.btn{width:100%;}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <div class="eyebrow">404 · Ruta no encontrada</div>
+    <h1>La página que buscás no existe.</h1>
+    <p>Puede que la URL haya cambiado o que el enlace esté incompleto. Si querés, podés volver al inicio o escribirnos por Instagram DM para resolverlo directamente.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/index.html">Volver al inicio</a>
+      <a class="btn btn-ghost" href="https://ig.me/m/nicooptimizaciones" target="_blank" rel="noopener">Escribir por Instagram DM</a>
+    </div>
+    <p class="mini">Si venís desde un enlace viejo, también podés volver a la landing principal y seguir con la reserva.</p>
+  </main>
+</body>
+</html>
