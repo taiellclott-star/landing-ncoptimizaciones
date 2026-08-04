@@ -596,12 +596,12 @@
       sessionStorage.setItem('testimonialCarouselDemoShown', '1');
       var offset = Math.min(140, state.originalWidth / 2);
       window.requestAnimationFrame(function(){
-        track.style.transition = 'transform .55s ease';
+        track.style.transition = 'transform 1.2s ease';
         track.style.transform = 'translateX(' + (state.currentTranslate - offset) + 'px)';
         setTimeout(function(){
-          track.style.transition = 'transform .55s ease';
+          track.style.transition = 'transform 1.2s ease';
           track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
-        }, 700);
+        }, 1400);
       });
     }
 
@@ -659,7 +659,20 @@
     });
 
     updateBounds();
-    playDemo();
+
+    if('IntersectionObserver' in window){
+      var observer = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting && entry.intersectionRatio > 0.2){
+            playDemo();
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '0px 0px -20% 0px' });
+      observer.observe(section);
+    } else {
+      playDemo();
+    }
   }
 
   // ---- Plan selection from pricing cards ----
