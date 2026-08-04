@@ -279,7 +279,6 @@ function validarReserva(data) {
   if (!String(data.nombreCompleto || '').trim()) return 'Falta el nombre completo.';
   if (!String(data.correo || '').trim()) return 'Falta el correo.';
   if (!String(data.whatsapp || '').trim()) return 'Falta el WhatsApp.';
-  if (!String(data.instagram || '').trim()) return 'Falta el usuario de Instagram.';
   if (!String(data.plan || '').trim()) return 'Falta el plan.';
   if (!String(data.fecha || '').trim()) return 'Falta la fecha.';
   if (!String(data.horario || '').trim()) return 'Falta el horario.';
@@ -414,7 +413,6 @@ function guardarReserva(ss, data) {
     sanitizarCorreo(data.correo),
     sanitizarWhatsApp(data.whatsapp),
     sanitizarTexto(data.discord, 200),
-    sanitizarTexto(data.instagram, 200),
     data.plan || '',
     data.fecha || '',
     data.horario || '',
@@ -457,7 +455,6 @@ function enviarNotificacion(data) {
         'Correo: ' + sanitizarCorreo(data.correo) + '\n' +
         'WhatsApp: ' + sanitizarWhatsApp(data.whatsapp) + '\n' +
         'Discord: ' + (data.discord || '') + '\n' +
-        'Instagram: ' + (data.instagram || '') + '\n' +
         'Plan: ' + (data.plan || '') + '\n' +
         'Fecha: ' + (data.fecha || '') + '\n' +
         'Horario: ' + (data.horario || '') + '\n' +

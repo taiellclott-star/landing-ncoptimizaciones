@@ -508,8 +508,7 @@
         nombreCompleto: (document.getElementById('nombreCompleto') || {}).value || '',
         correo: sanitizarCampoCorreo((document.getElementById('correo') || {}).value || ''),
         whatsapp: sanitizarCampoWhatsApp((document.getElementById('whatsapp') || {}).value || ''),
-        discord: (document.getElementById('discord') || {}).value || '',
-        instagram: (document.getElementById('instagram') || {}).value || ''
+        discord: (document.getElementById('discord') || {}).value || ''
       };
     }
     var chip = document.getElementById('planChip');
@@ -567,7 +566,6 @@
         correo: RESERVA_INFO.correo || '',
         whatsapp: RESERVA_INFO.whatsapp || '',
         discord: RESERVA_INFO.discord || '',
-        instagram: RESERVA_INFO.instagram || '',
         plan: planName,
         fecha: fecha,
         horario: horario,

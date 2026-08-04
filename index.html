@@ -367,17 +367,45 @@
         <span class="eyebrow">Quién te atiende</span>
         <h2>Conocé a la persona detrás del servicio</h2>
       </div>
-      <div class="legal-grid">
+      <div class="legal-grid" style="align-items:start;">
         <article class="legal-card" style="display:grid;gap:18px;align-items:center;grid-template-columns:minmax(90px,120px)1fr;">
           <img src="assets/logo.png" alt="Foto del responsable del servicio" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;border:1px solid var(--line);background:var(--panel);">
           <div>
-            <h3 style="margin-bottom:8px;">TODO: completar bio</h3>
-            <p style="margin:0 0 8px 0;">TODO: completar bio</p>
-            <p style="margin:0 0 8px 0;">TODO: completar bio</p>
-            <p style="margin:0;">TODO: completar bio</p>
+            <p style="margin:0 0 8px 0;font-size:13px;color:var(--accent);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.14em;">Ingeniería antes que improvisación.</p>
+            <p style="margin:0 0 10px 0;">Soy Taiel Nicolás Clot, fundador de NC Optimizaciones. Analizo cada sistema, identifico sus limitaciones y hago ajustes específicos para mejorar estabilidad, latencia y rendimiento según el uso de cada usuario — nada de optimizadores automáticos ni configuraciones genéricas. Cada optimización se hace personalmente, en vivo y con total transparencia: siempre sabés qué se está haciendo en tu PC.</p>
           </div>
         </article>
       </div>
+      <div class="legal-grid" style="margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+        <article class="legal-card" style="padding:16px 18px;">
+          <div style="font-size:20px;margin-bottom:8px;">⚡</div>
+          <p style="margin:0;font-size:14px;line-height:1.5;">Optimizaciones realizadas personalmente</p>
+        </article>
+        <article class="legal-card" style="padding:16px 18px;">
+          <div style="font-size:20px;margin-bottom:8px;">🎮</div>
+          <p style="margin:0;font-size:14px;line-height:1.5;">Especializado en Gaming y Windows</p>
+        </article>
+        <article class="legal-card" style="padding:16px 18px;">
+          <div style="font-size:20px;margin-bottom:8px;">🔒</div>
+          <p style="margin:0;font-size:14px;line-height:1.5;">Sin formateos innecesarios</p>
+        </article>
+        <article class="legal-card" style="padding:16px 18px;">
+          <div style="font-size:20px;margin-bottom:8px;">💬</div>
+          <p style="margin:0;font-size:14px;line-height:1.5;">Soporte antes, durante y después del servicio</p>
+        </article>
+        <article class="legal-card" style="padding:16px 18px;">
+          <div style="font-size:20px;margin-bottom:8px;">🖥️</div>
+          <p style="margin:0;font-size:14px;line-height:1.5;">Atención 100% remota</p>
+        </article>
+        <article class="legal-card" style="padding:16px 18px;">
+          <div style="font-size:20px;margin-bottom:8px;">📈</div>
+          <p style="margin:0;font-size:14px;line-height:1.5;">Configuración adaptada a cada PC</p>
+        </article>
+      </div>
+      <article class="legal-card" style="margin-top:18px;">
+        <h3 style="margin-bottom:8px;">¿Por qué NC Optimizaciones?</h3>
+        <p style="margin:0;">Durante años probé configuraciones, BIOS y ajustes de rendimiento en mis propias PCs. Con el tiempo entendí que la mayoría no necesita hardware nuevo: el problema suele estar en una mala configuración. NC Optimizaciones nació para ofrecer eso mismo, de forma profesional y transparente.</p>
+      </article>
     </div>
   </section>
 
@@ -417,7 +445,7 @@
         </article>
         <article class="legal-card">
           <h3>Política de privacidad</h3>
-          <p>Solo usamos tus datos para coordinar la sesión, validar el pago y responder por WhatsApp, Discord e Instagram. No compartimos tus datos con terceros y los conservamos solo el tiempo necesario para gestionar el servicio.</p>
+          <p>Antes de contratar el servicio, cualquier consulta la respondemos por Instagram o Discord. Una vez que sos cliente, el soporte durante y después de la sesión es por WhatsApp. No compartimos tus datos con terceros y los conservamos solo el tiempo necesario para gestionar el servicio.</p>
         </article>
         <article class="legal-card">
           <h3>Términos y reprogramación</h3>
@@ -461,7 +489,6 @@
               <div class="field full"><label for="nombreCompleto">Nombre y apellido</label><input id="nombreCompleto" name="nombreCompleto" autocomplete="name" required></div>
               <div class="field"><label for="correo">Correo</label><input id="correo" type="email" name="correo" autocomplete="email" maxlength="254" required></div>
               <div class="field"><label for="whatsapp">Número</label><input id="whatsapp" type="tel" name="whatsapp" pattern="^[+0-9\s-]{8,15}$" maxlength="20" placeholder="11 2345 6789" autocomplete="tel" required></div>
-              <div class="field full"><label for="instagram">Usuario de Instagram</label><input id="instagram" name="instagram" placeholder="@usuario" autocomplete="off" required></div>
               <div class="field full"><label for="discord">Discord</label><input id="discord" name="discord" placeholder="usuario#0000" autocomplete="off"></div>
               <div class="field full">
                 <label for="plan">Plan elegido</label>
