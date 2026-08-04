@@ -543,39 +543,28 @@
     if(!section) return;
     var trackWrap = section.querySelector('.carousel-track-wrap');
     var track = section.querySelector('.carousel-track');
-    var cards = track ? Array.prototype.slice.call(track.querySelectorAll('.testimonial-card')) : [];
-    if(!trackWrap || !track || cards.length === 0) return;
+    if(!trackWrap || !track) return;
 
     var state = {
-      index: 0,
-      visible: 1,
-      maxIndex: 0,
       isDragging: false,
       startX: 0,
       startTranslate: 0,
       currentTranslate: 0,
-      cardWidth: 0,
-      gap: 18
+      minTranslate: 0,
+      maxTranslate: 0
     };
-
-    function getVisibleCount(){
-      var width = window.innerWidth;
-      if(width >= 1040) return 3;
-      if(width >= 720) return 2;
-      return 1;
-    }
 
     function clamp(value, min, max){
       return Math.min(Math.max(value, min), max);
     }
 
-    function update(){
-      state.visible = getVisibleCount();
-      state.maxIndex = Math.max(0, cards.length - state.visible);
-      if(state.index > state.maxIndex) state.index = state.maxIndex;
-      state.cardWidth = cards[0].getBoundingClientRect().width;
-      state.currentTranslate = -state.index * (state.cardWidth + state.gap);
-      track.style.transition = 'transform .36s ease';
+    function updateBounds(){
+      var trackRect = track.getBoundingClientRect();
+      var wrapRect = trackWrap.getBoundingClientRect();
+      state.maxTranslate = 0;
+      state.minTranslate = Math.min(0, wrapRect.width - trackRect.width);
+      state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
+      track.style.transition = 'transform .24s ease';
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }
 
@@ -593,32 +582,26 @@
     function moveDrag(event){
       if(!state.isDragging) return;
       var delta = event.clientX - state.startX;
-      state.currentTranslate = state.startTranslate + delta;
-      var maxTranslate = 100;
-      var minTranslate = -((state.maxIndex) * (state.cardWidth + state.gap)) - 100;
-      state.currentTranslate = clamp(state.currentTranslate, minTranslate, maxTranslate);
+      state.currentTranslate = clamp(state.startTranslate + delta, state.minTranslate, state.maxTranslate);
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }
 
-    function endDrag(event){
+    function endDrag(){
       if(!state.isDragging) return;
       state.isDragging = false;
       trackWrap.classList.remove('dragging');
-      var index = Math.round(-state.currentTranslate / (state.cardWidth + state.gap));
-      state.index = clamp(index, 0, state.maxIndex);
-      update();
+      state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
+      track.style.transition = 'transform .24s ease';
+      track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }
 
     trackWrap.addEventListener('pointerdown', beginDrag);
     trackWrap.addEventListener('pointermove', moveDrag);
     trackWrap.addEventListener('pointerup', endDrag);
     trackWrap.addEventListener('pointercancel', endDrag);
+    window.addEventListener('resize', updateBounds);
 
-    window.addEventListener('resize', function(){
-      update();
-    });
-
-    update();
+    updateBounds();
   }
 
   // ---- Plan selection from pricing cards ----

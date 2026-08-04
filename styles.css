@@ -236,10 +236,12 @@ header{
 .turnos-badge-sticky{display:block;text-align:center;margin:0 0 8px;}
 
 /* TESTIMONIOS */
-.testimonial-carousel{position:relative;display:flex;align-items:center;gap:14px;overflow:hidden;margin-bottom:20px;}
+.testimonial-carousel{position:relative;display:flex;flex-direction:column;gap:14px;overflow:hidden;margin-bottom:20px;}
 .carousel-track-wrap{overflow:hidden;flex:1;cursor:grab;touch-action:pan-y;user-select:none;}
 .carousel-track-wrap.dragging{cursor:grabbing;}
 .carousel-track{display:flex;gap:18px;transition:transform .36s ease;will-change:transform;}
+.carousel-hint{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.carousel-hint::before{content:'⟷';color:var(--accent);display:inline-block;width:18px;text-align:center;}
 .testimonials-grid{display:none;}
 .testimonial-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;min-width:100%;max-width:100%;flex:0 0 100%;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden;}
 @media (min-width: 720px){.testimonial-card{min-width:calc((100% - 18px)/2);max-width:calc((100% - 18px)/2);}}
