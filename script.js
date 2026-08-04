@@ -760,6 +760,7 @@
 
   var counters = document.querySelectorAll('[data-count-to]');
   var bars = document.querySelectorAll('.hud-bar span');
+  var sections = document.querySelectorAll('section.section');
 
   if('IntersectionObserver' in window){
     var seen = new WeakSet();
@@ -772,14 +773,23 @@
             entry.target.style.width = reduceMotion ? entry.target.getAttribute('data-fill') + '%' : '0%';
             requestAnimationFrame(function(){ entry.target.style.width = entry.target.getAttribute('data-fill') + '%'; });
           }
+          if(entry.target.matches('section.section')){
+            entry.target.classList.add('is-visible');
+          }
         }
       });
-    }, {threshold:0.4});
+    }, {threshold:0.2});
     counters.forEach(function(c){ obs.observe(c); });
     bars.forEach(function(b){ obs.observe(b); });
+    sections.forEach(function(section){ obs.observe(section); });
   } else {
     counters.forEach(function(c){ c.textContent = c.getAttribute('data-count-to'); });
     bars.forEach(function(b){ b.style.width = b.getAttribute('data-fill') + '%'; });
+    sections.forEach(function(section){ section.classList.add('is-visible'); });
+  }
+
+  if(reduceMotion){
+    sections.forEach(function(section){ section.classList.add('is-visible'); });
   }
 
 })();

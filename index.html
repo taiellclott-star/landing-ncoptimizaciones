@@ -86,8 +86,8 @@
     {"@type":"Question","name":"¿Cuánto tarda el proceso?","acceptedAnswer":{"@type":"Answer","text":"Depende del plan: Oficina entre 15 y 20 minutos, Gaming entre 15 y 30 minutos, y Gaming Plus entre 30 y 45 minutos."}},
     {"@type":"Question","name":"¿Qué pasa si no noto cambios?","acceptedAnswer":{"@type":"Answer","text":"Medimos benchmarks antes y después en la misma sesión, así ves los números en vivo, y lo revisamos juntos antes de cerrar."}},
     {"@type":"Question","name":"¿Hacés soporte después?","acceptedAnswer":{"@type":"Answer","text":"Sí, tenés soporte por WhatsApp o Discord si algo no anda como esperabas."}},
-    {"@type":"Question","name":"¿Qué pasa si mi comprobante tiene algún problema?","acceptedAnswer":{"@type":"Answer","text":"TODO: completar respuesta."}},
-    {"@type":"Question","name":"¿Emitís factura?","acceptedAnswer":{"@type":"Answer","text":"TODO: completar respuesta."}},
+    {"@type":"Question","name":"¿Qué pasa si mi comprobante tiene algún problema?","acceptedAnswer":{"@type":"Answer","text":"Si el comprobante tiene algún detalle, podés contactarme por Instagram o Discord con una captura y una breve explicación. Revisamos el caso y te digo cómo seguir."}},
+    {"@type":"Question","name":"¿Emitís factura?","acceptedAnswer":{"@type":"Answer","text":"No, el servicio se ofrece por transferencia y no emito factura. Si necesitás un comprobante de pago, te lo envío correctamente al momento de la reserva."}},
     {"@type":"Question","name":"¿Sirve para notebooks?","acceptedAnswer":{"@type":"Answer","text":"Sí, aunque en notebooks el margen de mejora puede ser menor por límites térmicos y de hardware."}}
   ]
 }
@@ -238,7 +238,7 @@
         <div class="plan" data-plan="Oficina" data-price="18000">
           <h3>Oficina</h3>
           <p class="for">Home office · Estudiantes · Empresas</p>
-          <div class="price">$18.000 <span style="font-size:13px;opacity:0.8;margin-left:6px;">ARS</span></div>
+          <div class="price">$18.000 <span class="price-currency">ARS</span></div>
           <div class="plan-includes">Incluye</div>
           <ul>
             <li>✓ Limpieza de Windows</li>
@@ -256,7 +256,7 @@
           <span class="plan-tag">Más elegido</span>
           <h3>Gaming</h3>
           <p class="for">Todo Oficina, más rendimiento</p>
-          <div class="price">$25.000 <span style="font-size:13px;opacity:0.8;margin-left:6px;">ARS</span></div>
+          <div class="price">$25.000 <span class="price-currency">ARS</span></div>
           <div class="plan-includes">Todo Oficina +</div>
           <ul>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Depuración Total del Sistema</strong><br><small>Eliminamos archivos temporales y caché acumulada para que todo corra más liviano.</small></span></li>
@@ -273,7 +273,7 @@
         <div class="plan" data-plan="Gaming Plus" data-price="45000">
           <h3>Gaming Plus</h3>
           <p class="for">Todo Gaming, más hardware</p>
-          <div class="price">$45.000 <span style="font-size:13px;opacity:0.8;margin-left:6px;">ARS</span></div>
+          <div class="price">$45.000 <span class="price-currency">ARS</span></div>
           <div class="plan-includes">Todo Gaming +</div>
           <ul>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><strong>Incluye todo el Pack Gaming</strong></span></li>
@@ -369,42 +369,16 @@
       </div>
       <div class="legal-grid" style="align-items:start;">
         <article class="legal-card" style="display:grid;gap:18px;align-items:center;grid-template-columns:minmax(90px,120px)1fr;">
-          <img src="assets/logo.png" alt="Foto del responsable del servicio" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;border:1px solid var(--line);background:var(--panel);">
+          <img src="assets/logo.png" alt="Foto del responsable del servicio" class="avatar-round">
           <div>
-            <p style="margin:0 0 8px 0;font-size:13px;color:var(--accent);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.14em;">Ingeniería antes que improvisación.</p>
-            <p style="margin:0 0 10px 0;">Soy Taiel Nicolás Clot, fundador de NC Optimizaciones. Analizo cada sistema, identifico sus limitaciones y hago ajustes específicos para mejorar estabilidad, latencia y rendimiento según el uso de cada usuario — nada de optimizadores automáticos ni configuraciones genéricas. Cada optimización se hace personalmente, en vivo y con total transparencia: siempre sabés qué se está haciendo en tu PC.</p>
+            <p style="margin:0 0 8px 0;font-size:13px;color:var(--accent);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.14em;">Cómo trabajo</p>
+            <p style="margin:0 0 10px 0;">Soy Taiel Nicolás Clot, fundador de NC Optimizaciones. Llevo años metido en la configuración de Windows, BIOS y hardware, buscando sacarle el máximo a mis propias PCs — hoy hago lo mismo para otros, pero de forma remota y en vivo. No aplico el mismo paquete de ajustes a todos: reviso qué tiene instalada tu PC, para qué la usás, y trabajo sobre eso. Vos ves todo lo que hago mientras lo hago, y te explico cada cambio en el momento, no un informe después.</p>
           </div>
         </article>
       </div>
-      <div class="legal-grid" style="margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
-        <article class="legal-card" style="padding:16px 18px;">
-          <div style="font-size:20px;margin-bottom:8px;">⚡</div>
-          <p style="margin:0;font-size:14px;line-height:1.5;">Optimizaciones realizadas personalmente</p>
-        </article>
-        <article class="legal-card" style="padding:16px 18px;">
-          <div style="font-size:20px;margin-bottom:8px;">🎮</div>
-          <p style="margin:0;font-size:14px;line-height:1.5;">Especializado en Gaming y Windows</p>
-        </article>
-        <article class="legal-card" style="padding:16px 18px;">
-          <div style="font-size:20px;margin-bottom:8px;">🔒</div>
-          <p style="margin:0;font-size:14px;line-height:1.5;">Sin formateos innecesarios</p>
-        </article>
-        <article class="legal-card" style="padding:16px 18px;">
-          <div style="font-size:20px;margin-bottom:8px;">💬</div>
-          <p style="margin:0;font-size:14px;line-height:1.5;">Soporte antes, durante y después del servicio</p>
-        </article>
-        <article class="legal-card" style="padding:16px 18px;">
-          <div style="font-size:20px;margin-bottom:8px;">🖥️</div>
-          <p style="margin:0;font-size:14px;line-height:1.5;">Atención 100% remota</p>
-        </article>
-        <article class="legal-card" style="padding:16px 18px;">
-          <div style="font-size:20px;margin-bottom:8px;">📈</div>
-          <p style="margin:0;font-size:14px;line-height:1.5;">Configuración adaptada a cada PC</p>
-        </article>
-      </div>
-      <article class="legal-card" style="margin-top:18px;">
+      <article class="legal-card" style="margin-top:18px;padding:22px 24px;">
         <h3 style="margin-bottom:8px;">¿Por qué NC Optimizaciones?</h3>
-        <p style="margin:0;">Durante años probé configuraciones, BIOS y ajustes de rendimiento en mis propias PCs. Con el tiempo entendí que la mayoría no necesita hardware nuevo: el problema suele estar en una mala configuración. NC Optimizaciones nació para ofrecer eso mismo, de forma profesional y transparente.</p>
+        <p style="margin:0;line-height:1.6;">Durante años probé configuraciones, BIOS y ajustes de rendimiento en mis propias PCs. Con el tiempo entendí que la mayoría no necesita hardware nuevo: el problema suele estar en una mala configuración. NC Optimizaciones nació para ofrecer eso mismo, de forma profesional y transparente.</p>
       </article>
     </div>
   </section>
@@ -424,8 +398,8 @@
         <details><summary>¿Cuánto tarda el proceso?</summary><p>Depende del plan: Oficina entre 15 y 20 minutos, Gaming entre 15 y 30 minutos, y Gaming Plus entre 30 y 45 minutos.</p></details>
         <details><summary>¿Qué pasa si no noto cambios?</summary><p>Medimos benchmarks antes y después en la misma sesión, así ves los números en vivo. Si algo no cierra, lo revisamos juntos antes de cerrar.</p></details>
         <details><summary>¿Hacés soporte después?</summary><p>Sí, tenés soporte por WhatsApp o Discord si algo no anda como esperabas.</p></details>
-        <details><summary>¿Qué pasa si mi comprobante tiene algún problema?</summary><p>TODO: completar respuesta.</p></details>
-        <details><summary>¿Emitís factura?</summary><p>TODO: completar respuesta.</p></details>
+        <details><summary>¿Qué pasa si mi comprobante tiene algún problema?</summary><p>Si el comprobante tiene algún detalle, podés contactarme por Instagram o Discord con una captura y una breve explicación. Revisamos el caso y te digo cómo seguir.</p></details>
+        <details><summary>¿Emitís factura?</summary><p>No, el servicio se ofrece por transferencia y no emito factura. Si necesitás un comprobante de pago, te lo envío correctamente al momento de la reserva.</p></details>
         <details><summary>¿Sirve para notebooks?</summary><p>Sí, aunque en notebooks el margen de mejora puede ser menor por límites térmicos y de hardware.</p></details>
       </div>
     </div>
@@ -491,6 +465,18 @@
               <div class="field"><label for="whatsapp">Número</label><input id="whatsapp" type="tel" name="whatsapp" pattern="^[+0-9\s-]{8,15}$" maxlength="20" placeholder="11 2345 6789" autocomplete="tel" required></div>
               <div class="field full"><label for="discord">Discord</label><input id="discord" name="discord" placeholder="usuario#0000" autocomplete="off"></div>
               <div class="field full">
+                <label for="comoMeEncontraste">¿Cómo me encontraste?</label>
+                <select id="comoMeEncontraste" name="comoMeEncontraste">
+                  <option value="">Seleccioná una opción</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Discord">Discord</option>
+                  <option value="Recomendado por alguien">Recomendado por alguien</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+              <div class="field full"><label for="referido">Código de referido o quién te recomendó</label><input id="referido" name="referido" placeholder="Opcional" autocomplete="off"></div>
+              <div class="field full">
                 <label for="plan">Plan elegido</label>
                 <select id="plan" name="plan" required>
                   <option value="">Seleccioná un plan</option>
@@ -548,9 +534,9 @@
             </label>
             <p class="upload-note">Por ahora la revisión de cada comprobante la hacemos a mano (estamos trabajando para automatizarla), así que puede demorar un rato — no hace falta que reenvíes ni nos escribas si no es instantáneo, ya te vamos a confirmar el turno.</p>
             <div class="field full" style="margin-top:18px;">
-              <label for="aceptaPrivacidad" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;line-height:1.5;">
-                <input id="aceptaPrivacidad" name="aceptaPrivacidad" type="checkbox" required style="margin-top:3px;flex-shrink:0;">
-                <span>Acepto la <a href="#legal" style="color:var(--accent);text-decoration:underline;">política de privacidad</a>.</span>
+              <label for="aceptaPrivacidad" class="consent-check">
+                <input id="aceptaPrivacidad" name="aceptaPrivacidad" type="checkbox" required>
+                <span>Acepto la <a href="#legal" class="consent-link">política de privacidad</a>.</span>
               </label>
             </div>
             <div class="error-msg" data-error-for="3" aria-live="polite">Aceptá la política de privacidad para confirmar la reserva.</div>
