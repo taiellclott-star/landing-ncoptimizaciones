@@ -582,10 +582,12 @@
     }
 
     function updateBounds(){
+      state.originalWidth = calculateOriginalWidth();
       var trackRect = track.getBoundingClientRect();
       var wrapRect = trackWrap.getBoundingClientRect();
       state.maxTranslate = 0;
       state.minTranslate = Math.min(0, wrapRect.width - trackRect.width);
+      wrapPosition();
       state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
       track.style.transition = 'transform .24s ease';
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
@@ -638,7 +640,6 @@
       state.isDragging = false;
       trackWrap.classList.remove('dragging');
       wrapPosition();
-      state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
       track.style.transition = 'transform .24s ease';
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }

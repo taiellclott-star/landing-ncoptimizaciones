@@ -241,7 +241,7 @@ header{
 .carousel-track-wrap.dragging{cursor:grabbing;}
 .carousel-track{display:flex;gap:18px;transition:transform .36s ease;will-change:transform;}
 .carousel-hint{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px;}
-.carousel-hint::before{content:'⟷';color:var(--accent);display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:999px;background:rgba(79,168,255,0.12);font-size:14px;}
+.carousel-hint::before{content:'↔';color:var(--accent);display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;line-height:1;font-size:13px;border-radius:999px;background:rgba(79,168,255,0.12);}
 .carousel-hint{padding:8px 0 0 0;}
 .testimonials-grid{display:none;}
 .testimonial-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;min-width:100%;max-width:100%;flex:0 0 100%;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden;}
