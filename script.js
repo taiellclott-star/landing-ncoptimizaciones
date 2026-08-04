@@ -571,7 +571,6 @@
         horario: horario,
         comentarios: comentariosEl ? comentariosEl.value : '',
         comoMeEncontraste: document.getElementById('comoMeEncontraste') ? document.getElementById('comoMeEncontraste').value : '',
-        referido: document.getElementById('referido') ? document.getElementById('referido').value : '',
         comprobanteBase64: COMPROBANTE_DATA ? COMPROBANTE_DATA.base64 : '',
         comprobanteName: COMPROBANTE_DATA ? COMPROBANTE_DATA.name : '',
         comprobanteType: COMPROBANTE_DATA ? COMPROBANTE_DATA.type : '',
