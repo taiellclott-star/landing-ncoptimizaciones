@@ -5,6 +5,23 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-04 — Mejoras de la página 404
+
+**Archivos:** `404.html`, `context.md`, `CHANGELOG.md`
+
+**Qué cambió:** se rediseñó la página 404 para usar `href="/"` en lugar de
+`/index.html`, se mejoró el mensaje con un tono más directo y cercano,
+se añadieron CTAs para ver planes y contactar por Discord, y se documentó
+el cambio en `context.md`.
+
+**Por qué:** asegurar que los visitantes que llegan por una URL inválida
+no se pierdan y puedan retomar la reserva o contactar al servicio con
+facilidad.
+
+**Impacto:** mejora la experiencia de usuario en rutas inválidas sin
+afectar el resto del sitio ni la lógica de reserva.
+
+---
 ## 2026-08-04 — Correcciones de UI y FAQ
 
 **Archivos:** `index.html`, `styles.css`, `context.md`

@@ -170,6 +170,8 @@ Google Sheets.
 - No existen todavía `_redirects`, `manifest.json`, `robots.txt` ni
   `sitemap.xml` en este repositorio. Se documentarán acá apenas se
   agreguen.
+- `404.html` — página 404 personalizada con CTA para volver al inicio,
+  ver planes o contactar por Discord/Instagram cuando un enlace es inválido.
 
 ---
 
