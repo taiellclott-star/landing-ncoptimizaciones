@@ -2,7 +2,10 @@ var SPREADSHEET_ID = '1_Hg1x_IntEqNWfa5aoALpylWIsswaGcrRVO73ZnctvI';
 var MAIL_NOTIFICACION = 'taiellclott@gmail.com,taieljuega@gmail.com'; // separados por coma, sin espacios
 
 // Columnas en la pestaña "Reservas", en el mismo orden en que las escribe
-// guardarReserva() más abajo:
+// guardarReserva() más abajo. El formulario actual pide nombre, correo,
+// WhatsApp, Discord, plan, fecha, horario, comentarios, cómo nos encontró
+// y referido. Como no hay campo de Instagram en el HTML, dejamos esa columna
+// vacía para mantener el orden consistente con la estructura previa.
 // 0=timestamp, 1=nombreCompleto, 2=correo, 3=whatsapp, 4=discord,
 // 5=instagram, 6=plan, 7=fecha, 8=horario, 9=comentarios,
 // 10=comoMeEncontraste, 11=referido, 12=comprobanteUrl
@@ -133,15 +136,15 @@ function doGet(e) {
       // manual y la salteamos.
       if (!(row[0] instanceof Date)) continue;
 
-      var rowFecha = String(row[COL_FECHA] || '').trim();
+      var rowFecha = String(row[COL_FECHA] || row[6] || '').trim();
       if (rowFecha !== fecha) continue;
 
-      var horario = String(row[COL_HORARIO] || '').trim();
+      var horario = String(row[COL_HORARIO] || row[7] || '').trim();
       if (!horario) continue;
 
       var parts = horario.split(':');
       var startMin = Number(parts[0]) * 60 + Number(parts[1] || 0);
-      var planName = String(row[COL_PLAN] || '').trim();
+      var planName = String(row[COL_PLAN] || row[5] || '').trim();
       var duration = PLAN_DURATION[planName] || 30;
 
       out.turnos.push({ start: startMin, duration: duration });
@@ -353,15 +356,15 @@ function hayConflicto(sheet, data) {
     // manual y la salteamos, igual que en doGet.
     if (!(row[0] instanceof Date)) continue;
 
-    var rowFecha = String(row[COL_FECHA] || '').trim();
+    var rowFecha = String(row[COL_FECHA] || row[6] || '').trim();
     if (rowFecha !== fecha) continue;
 
-    var rowHorario = String(row[COL_HORARIO] || '').trim();
+    var rowHorario = String(row[COL_HORARIO] || row[7] || '').trim();
     if (!rowHorario) continue;
 
     var rowParts = rowHorario.split(':');
     var rowStart = Number(rowParts[0]) * 60 + Number(rowParts[1] || 0);
-    var rowPlan = String(row[COL_PLAN] || '').trim();
+    var rowPlan = String(row[COL_PLAN] || row[5] || '').trim();
     var rowDuration = PLAN_DURATION[rowPlan] || 30;
     var rowEnd = rowStart + rowDuration;
 
@@ -413,6 +416,7 @@ function guardarReserva(ss, data) {
     sanitizarCorreo(data.correo),
     sanitizarWhatsApp(data.whatsapp),
     sanitizarTexto(data.discord, 200),
+    '',
     data.plan || '',
     data.fecha || '',
     data.horario || '',
