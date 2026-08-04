@@ -534,6 +534,16 @@
         });
       });
       group.addEventListener('pointerleave', function(){ updateStars(group); });
+      var labels = Array.prototype.slice.call(group.querySelectorAll('label.star'));
+      labels.forEach(function(label){
+        label.addEventListener('click', function(event){
+          var input = label.querySelector('input[name="reviewRating"]');
+          if(input){
+            input.checked = true;
+            updateStars(group);
+          }
+        });
+      });
       updateStars(group);
     });
   }
