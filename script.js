@@ -545,17 +545,40 @@
     var track = section.querySelector('.carousel-track');
     if(!trackWrap || !track) return;
 
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.testimonial-card'));
+    if(cards.length === 0) return;
+
     var state = {
       isDragging: false,
       startX: 0,
       startTranslate: 0,
       currentTranslate: 0,
       minTranslate: 0,
-      maxTranslate: 0
+      maxTranslate: 0,
+      originalWidth: 0
     };
 
     function clamp(value, min, max){
       return Math.min(Math.max(value, min), max);
+    }
+
+    function calculateOriginalWidth(){
+      var total = 0;
+      cards.forEach(function(card, index){
+        var rect = card.getBoundingClientRect();
+        total += rect.width;
+        if(index > 0) total += 18;
+      });
+      return total;
+    }
+
+    function createClones(){
+      cards.slice().reverse().forEach(function(card){
+        track.insertBefore(card.cloneNode(true), track.firstChild);
+      });
+      cards.forEach(function(card){
+        track.appendChild(card.cloneNode(true));
+      });
     }
 
     function updateBounds(){
@@ -566,6 +589,20 @@
       state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
       track.style.transition = 'transform .24s ease';
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
+    }
+
+    function playDemo(){
+      if(sessionStorage.getItem('testimonialCarouselDemoShown')) return;
+      sessionStorage.setItem('testimonialCarouselDemoShown', '1');
+      var offset = Math.min(140, state.originalWidth / 2);
+      window.requestAnimationFrame(function(){
+        track.style.transition = 'transform .55s ease';
+        track.style.transform = 'translateX(' + (state.currentTranslate - offset) + 'px)';
+        setTimeout(function(){
+          track.style.transition = 'transform .55s ease';
+          track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
+        }, 700);
+      });
     }
 
     function beginDrag(event){
@@ -579,10 +616,20 @@
       event.preventDefault();
     }
 
+    function wrapPosition(){
+      while(state.currentTranslate > -state.originalWidth){
+        state.currentTranslate -= state.originalWidth;
+      }
+      while(state.currentTranslate < -state.originalWidth * 2){
+        state.currentTranslate += state.originalWidth;
+      }
+    }
+
     function moveDrag(event){
       if(!state.isDragging) return;
       var delta = event.clientX - state.startX;
-      state.currentTranslate = clamp(state.startTranslate + delta, state.minTranslate, state.maxTranslate);
+      state.currentTranslate = state.startTranslate + delta;
+      wrapPosition();
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }
 
@@ -590,18 +637,29 @@
       if(!state.isDragging) return;
       state.isDragging = false;
       trackWrap.classList.remove('dragging');
+      wrapPosition();
       state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
       track.style.transition = 'transform .24s ease';
       track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }
 
+    state.originalWidth = calculateOriginalWidth();
+    createClones();
+    state.currentTranslate = -state.originalWidth;
+
     trackWrap.addEventListener('pointerdown', beginDrag);
     trackWrap.addEventListener('pointermove', moveDrag);
     trackWrap.addEventListener('pointerup', endDrag);
+    trackWrap.addEventListener('pointerleave', endDrag);
     trackWrap.addEventListener('pointercancel', endDrag);
-    window.addEventListener('resize', updateBounds);
+    window.addEventListener('resize', function(){
+      updateBounds();
+      state.currentTranslate = clamp(state.currentTranslate, state.minTranslate, state.maxTranslate);
+      track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
+    });
 
     updateBounds();
+    playDemo();
   }
 
   // ---- Plan selection from pricing cards ----
