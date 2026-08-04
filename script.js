@@ -421,6 +421,7 @@
     renderTurnosHoyBadge();
     mostrarContenidoRealVideo();
     mostrarContenidoRealTestimonios();
+    initSpecularButtons();
 
     // Contador opcional "+XX PCs optimizadas". Completá PCS_OPTIMIZADAS más
     // abajo SOLO con un número real y verificable; si queda en 0 el bloque
@@ -431,6 +432,31 @@
       pcsEl.style.display = '';
     }
   });
+
+  function initSpecularButtons(){
+    var buttons = document.querySelectorAll('.btn-specular');
+    if(!buttons.length) return;
+
+    buttons.forEach(function(btn){
+      btn.style.setProperty('--specular-x','50%');
+      btn.style.setProperty('--specular-y','40%');
+
+      btn.addEventListener('pointermove', function(event){
+        var rect = btn.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        var px = Math.max(0, Math.min(1, x / rect.width));
+        var py = Math.max(0, Math.min(1, y / rect.height));
+        btn.style.setProperty('--specular-x', (px * 100).toFixed(2) + '%');
+        btn.style.setProperty('--specular-y', (py * 100).toFixed(2) + '%');
+      });
+
+      btn.addEventListener('pointerleave', function(){
+        btn.style.setProperty('--specular-x','50%');
+        btn.style.setProperty('--specular-y','40%');
+      });
+    });
+  }
 
   // ---- Plan selection from pricing cards ----
   window.selectPlan = function(planName){

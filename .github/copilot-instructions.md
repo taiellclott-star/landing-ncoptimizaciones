@@ -27,6 +27,7 @@ nada sobre el negocio o la arquitectura que ya esté documentado ahí.
 Nunca termines una tarea sin:
 1. Actualizar `context.md` si cambió algo de arquitectura, estado actual
    o convenciones (sin borrar información histórica, solo actualizarla).
+2. Recordar actualizar a la par `Code.gs` en caso de ser necesario
 
 
 Si una tarea es puramente exploratoria (responder una pregunta, revisar

@@ -70,6 +70,47 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-0.01em;
 }
 .btn-primary{background:var(--accent);color:#0A0C10;}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,168,255,0.25);}
+.btn-specular{
+  --specular-x: 50%;
+  --specular-y: 40%;
+  --specular-opacity: 0.55;
+  --specular-size: 180px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(79,168,255,0.24);
+  background:linear-gradient(180deg, rgba(79,168,255,0.16), rgba(10,12,16,0.92));
+  color:#F8FBFF;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 22px 40px rgba(0,0,0,0.22);
+}
+.btn-specular:hover{
+  transform:translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(79,168,255,0.28), 0 26px 48px rgba(0,0,0,0.28);
+}
+.btn-specular::before{
+  content:'';
+  position:absolute;
+  top:var(--specular-y);
+  left:var(--specular-x);
+  width:var(--specular-size);
+  height:var(--specular-size);
+  transform:translate(-50%, -50%);
+  border-radius:50%;
+  pointer-events:none;
+  background: radial-gradient(circle, rgba(255,255,255,var(--specular-opacity)) 0%, rgba(255,255,255,0) 45%);
+  filter:blur(10px);
+  transition:opacity .22s ease, transform .22s ease;
+}
+.btn-specular::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+.btn-specular:focus-visible{
+  outline:2px solid rgba(79,168,255,0.8);
+  outline-offset:3px;
+}
 .btn-ghost{background:transparent;color:var(--text);border-color:var(--line);}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
 .btn-block{width:100%;justify-content:center;}
