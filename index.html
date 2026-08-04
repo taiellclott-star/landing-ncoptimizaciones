@@ -251,39 +251,24 @@
             <div class="field full"><label for="reviewName">Nombre o apodo</label><input id="reviewName" name="reviewName" autocomplete="name" required placeholder="Tu nombre o apodo"></div>
             <div class="field full">
               <label class="field-label">Calificación</label>
-              <div class="rating-stars" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas con medias estrellas">
-                <label class="star half" data-value="0.5">
-                  <input type="radio" name="reviewRating" value="0.5" required aria-label="0.5 estrellas">
-                </label>
+              <div class="rating-stars" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas">
                 <label class="star full" data-value="1">
-                  <input type="radio" name="reviewRating" value="1" aria-label="1 estrella">
-                </label>
-                <label class="star half" data-value="1.5">
-                  <input type="radio" name="reviewRating" value="1.5" aria-label="1.5 estrellas">
+                  <input type="radio" name="reviewRating" value="1" required aria-label="1 estrella">
                 </label>
                 <label class="star full" data-value="2">
                   <input type="radio" name="reviewRating" value="2" aria-label="2 estrellas">
                 </label>
-                <label class="star half" data-value="2.5">
-                  <input type="radio" name="reviewRating" value="2.5" aria-label="2.5 estrellas">
-                </label>
                 <label class="star full" data-value="3">
                   <input type="radio" name="reviewRating" value="3" aria-label="3 estrellas">
                 </label>
-                <label class="star half" data-value="3.5">
-                  <input type="radio" name="reviewRating" value="3.5" aria-label="3.5 estrellas">
-                </label>
                 <label class="star full" data-value="4">
                   <input type="radio" name="reviewRating" value="4" aria-label="4 estrellas">
-                </label>
-                <label class="star half" data-value="4.5">
-                  <input type="radio" name="reviewRating" value="4.5" aria-label="4.5 estrellas">
                 </label>
                 <label class="star full" data-value="5">
                   <input type="radio" name="reviewRating" value="5" aria-label="5 estrellas">
                 </label>
               </div>
-              <p class="rating-help">Elegí tu nota con medias estrellas.</p>
+              <p class="rating-help">Elegí tu nota entre 1 y 5 estrellas.</p>
             </div>
             <div class="field full"><label for="reviewPC">Specs del PC (opcional)</label><input id="reviewPC" name="reviewPC" placeholder="Ej: Ryzen 5 + RTX 3060"></div>
             <div class="field full"><label for="reviewMessage">Mensaje / testimonio</label><textarea id="reviewMessage" name="reviewMessage" rows="4" required placeholder="Qué mejoró, cómo te fue en los juegos o qué notaste después."></textarea></div>

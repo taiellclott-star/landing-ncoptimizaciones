@@ -260,10 +260,9 @@ header{
 .rating-stars input{position:absolute;opacity:0;pointer-events:none;}
 .rating-stars label.star{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:background .2s ease,border-color .2s ease;}
 .rating-stars label.star::before{content:'★';font-size:18px;color:rgba(255,255,255,0.22);transition:color .18s ease;}
-.rating-stars label.star.half::after{content:'★';position:absolute;left:0;top:0;width:50%;overflow:hidden;font-size:18px;color:rgba(255,255,255,0.22);pointer-events:none;transition:color .18s ease;}
+.rating-stars label.star::before{content:'★';font-size:18px;color:rgba(255,255,255,0.22);transition:color .18s ease;}
 .rating-stars label.star.selected{border-color:rgba(79,168,255,0.55);background:rgba(79,168,255,0.12);}
 .rating-stars label.star.selected::before{color:var(--accent);}
-.rating-stars label.star.half.selected::after{color:var(--accent);}
 .rating-stars label.star:hover{background:rgba(79,168,255,0.12);border-color:var(--accent);}
 .rating-stars label.star:hover::before,
 .rating-stars label.star:hover::after{color:rgba(79,168,255,0.9);}
