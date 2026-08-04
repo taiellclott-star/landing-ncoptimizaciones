@@ -181,6 +181,7 @@
       <div class="section-head">
         <span class="eyebrow">Lo que dicen</span>
         <h2>Mirá quién ya optimizó</h2>
+        <p>Mensajes reales en formato corto, como si fueran mensajes de WhatsApp.</p>
       </div>
 
       <div class="testimonial-carousel" aria-label="Carrusel de testimonios de clientes">
@@ -189,36 +190,40 @@
         </button>
         <div class="carousel-track-wrap">
           <div class="carousel-track">
-            <article class="testimonial-card" data-testimonial-real="true">
-              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
-              <p class="testimonial-quote">"Mi PC dejó de trabarse en partidas y ahora puedo jugar sin sentir el input lag que antes me arruinaba los FPS. Mejoró todo sin tocar mis archivos."</p>
-              <div class="testimonial-author">
-                <span class="testimonial-name">Lucas M.</span>
-                <span class="testimonial-meta">Plan Gaming</span>
+            <article class="testimonial-card spotlight-card" data-testimonial-real="true" data-spotlight-color="rgba(79, 168, 255, 0.18)">
+              <div class="testimonial-header">
+                <div>
+                  <strong class="testimonial-name">Santiago <span class="testimonial-nickname">(Pitu)</span></strong>
+                  <p class="testimonial-pc">Ryzen 5 3600 + RTX 3060</p>
+                </div>
+                <span class="testimonial-badge">Mensaje</span>
+              </div>
+              <div class="testimonial-message">
+                <p>Amigo muchísimas gracias, la PC está volando mal, pasé de 100fps en Deadlock a 240 estables, totalmente valió la pena</p>
               </div>
             </article>
-            <article class="testimonial-card" data-testimonial-real="true">
-              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
-              <p class="testimonial-quote">"El arranque de Windows es mucho más rápido y la PC ya no se calienta tanto en los juegos. La sesión por AnyDesk fue muy clara y transparente."</p>
-              <div class="testimonial-author">
-                <span class="testimonial-name">Camila R.</span>
-                <span class="testimonial-meta">Plan Oficina</span>
+            <article class="testimonial-card spotlight-card" data-testimonial-real="true" data-spotlight-color="rgba(79, 168, 255, 0.18)">
+              <div class="testimonial-header">
+                <div>
+                  <strong class="testimonial-name">Theo <span class="testimonial-nickname">(el de Fortnite que se le cerraba)</span></strong>
+                  <p class="testimonial-pc">Intel i5 + GTX 1650</p>
+                </div>
+                <span class="testimonial-badge">Mensaje</span>
+              </div>
+              <div class="testimonial-message">
+                <p>Gracias tai por la opti, mira que la PC es mala pero antes no podía ni entrar a 4 pestañas juntas que explotaba, ahora se la banca y ya no parece que va a volar jaja</p>
               </div>
             </article>
-            <article class="testimonial-card" data-testimonial-real="true">
-              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
-              <p class="testimonial-quote">"Noté 20 FPS más en varios títulos y la PC dejó de tener micro stutters. Se nota que es un ajuste profesional, no un parche improvisado."</p>
-              <div class="testimonial-author">
-                <span class="testimonial-name">Matías S.</span>
-                <span class="testimonial-meta">Plan Gaming Plus</span>
+            <article class="testimonial-card spotlight-card" data-testimonial-real="true" data-spotlight-color="rgba(79, 168, 255, 0.18)">
+              <div class="testimonial-header">
+                <div>
+                  <strong class="testimonial-name">Ignacio <span class="testimonial-nickname">(el de CS que le iba todo trabado)</span></strong>
+                  <p class="testimonial-pc">Ryzen 3 + GTX 1050 Ti</p>
+                </div>
+                <span class="testimonial-badge">Mensaje</span>
               </div>
-            </article>
-            <article class="testimonial-card" data-testimonial-real="true">
-              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
-              <p class="testimonial-quote">"Lo mejor fue que no se perdió nada. Me mostraron todo por Discord y AnyDesk, y al final mi PC quedó más fluida sin formatear."</p>
-              <div class="testimonial-author">
-                <span class="testimonial-name">Sofía N.</span>
-                <span class="testimonial-meta">Plan Oficina</span>
+              <div class="testimonial-message">
+                <p>Gracias amigo, no se me volvió a cerrar en ningún juego, voy a 200 fps estables en Fortnite y antes no podía ni empezar a jugar que se me cerraba</p>
               </div>
             </article>
           </div>
@@ -237,26 +242,62 @@
             <label for="reviewWeb">No completar este campo</label>
             <input type="text" id="reviewWeb" name="reviewWeb" tabindex="-1" autocomplete="off">
           </div>
-          <div class="field-grid">
-            <div class="field full"><label for="reviewName">Nombre completo</label><input id="reviewName" name="reviewName" autocomplete="name" required></div>
+          <div class="field-grid review-fields">
+            <div class="field full"><label for="reviewName">Nombre o apodo</label><input id="reviewName" name="reviewName" autocomplete="name" required placeholder="Ej: Santiago (Pitu)"></div>
             <div class="field full">
               <label class="field-label">Calificación</label>
-              <div class="rating-stars" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas">
-                <label><input type="radio" name="reviewRating" value="5" required><span>★</span></label>
-                <label><input type="radio" name="reviewRating" value="4"><span>★</span></label>
-                <label><input type="radio" name="reviewRating" value="3"><span>★</span></label>
-                <label><input type="radio" name="reviewRating" value="2"><span>★</span></label>
-                <label><input type="radio" name="reviewRating" value="1"><span>★</span></label>
+              <div class="rating-stars" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas con medias estrellas">
+                <label class="star full" data-value="0.5">
+                  <input type="radio" name="reviewRating" value="0.5" required aria-label="0.5 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star half" data-value="1">
+                  <input type="radio" name="reviewRating" value="1" aria-label="1 estrella">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star full" data-value="1.5">
+                  <input type="radio" name="reviewRating" value="1.5" aria-label="1.5 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star half" data-value="2">
+                  <input type="radio" name="reviewRating" value="2" aria-label="2 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star full" data-value="2.5">
+                  <input type="radio" name="reviewRating" value="2.5" aria-label="2.5 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star half" data-value="3">
+                  <input type="radio" name="reviewRating" value="3" aria-label="3 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star full" data-value="3.5">
+                  <input type="radio" name="reviewRating" value="3.5" aria-label="3.5 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star half" data-value="4">
+                  <input type="radio" name="reviewRating" value="4" aria-label="4 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star full" data-value="4.5">
+                  <input type="radio" name="reviewRating" value="4.5" aria-label="4.5 estrellas">
+                  <span class="star-icon"></span>
+                </label>
+                <label class="star half" data-value="5">
+                  <input type="radio" name="reviewRating" value="5" aria-label="5 estrellas">
+                  <span class="star-icon"></span>
+                </label>
               </div>
+              <p class="rating-help">Elegí tu nota con medias estrellas.</p>
             </div>
-            <div class="field full"><label for="reviewPC">PC optimizada (opcional)</label><input id="reviewPC" name="reviewPC" placeholder="Ej: Ryzen 5 + RTX 3060"></div>
-            <div class="field full"><label for="reviewMessage">Contanos tu experiencia</label><textarea id="reviewMessage" name="reviewMessage" rows="4" required placeholder="Qué mejoró, cómo te fue en los juegos, o qué notaste después."></textarea></div>
+            <div class="field full"><label for="reviewPC">Specs del PC (opcional)</label><input id="reviewPC" name="reviewPC" placeholder="Ej: Ryzen 5 + RTX 3060"></div>
+            <div class="field full"><label for="reviewMessage">Mensaje / testimonio</label><textarea id="reviewMessage" name="reviewMessage" rows="4" required placeholder="Qué mejoró, cómo te fue en los juegos o qué notaste después."></textarea></div>
           </div>
           <div class="error-msg" id="reviewError" aria-live="polite">Completá los campos obligatorios para enviar la reseña.</div>
           <div class="form-nav" style="justify-content:flex-end;">
             <button type="button" class="btn btn-primary" id="btnSubmitReview" onclick="submitReview()">Enviar reseña</button>
           </div>
-          <p class="privacy-note" id="reviewSuccess" style="display:none;color:var(--accent);">¡Gracias! Tu reseña ya está en revisión. Te aviso cuando la aprobemos.</p>
+          <p class="privacy-note" id="reviewSuccess" style="display:none;color:var(--accent);">¡Gracias! Tu reseña fue enviada y queda pendiente de revisión.</p>
         </form>
       </div>
     </div>

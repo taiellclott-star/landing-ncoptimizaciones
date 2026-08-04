@@ -421,6 +421,8 @@
     renderTurnosHoyBadge();
     mostrarContenidoRealVideo();
     mostrarContenidoRealTestimonios();
+    initTestimonialCarousel();
+    initReviewRatingStars();
     initSpecularButtons();
     initSpotlightCards();
 
@@ -493,6 +495,46 @@
         card.style.setProperty('--mouse-x', '50%');
         card.style.setProperty('--mouse-y', '50%');
       });
+    });
+  }
+
+  function initReviewRatingStars(){
+    var groups = document.querySelectorAll('.rating-stars');
+    if(!groups.length) return;
+
+    function updateStars(group){
+      var labels = Array.prototype.slice.call(group.querySelectorAll('label.star'));
+      var checked = group.querySelector('input[name="reviewRating"]:checked');
+      labels.forEach(function(label){
+        var value = parseFloat(label.getAttribute('data-value')) || 0;
+        label.classList.remove('selected');
+        if(checked){
+          var selectedValue = parseFloat(checked.value);
+          if(value <= selectedValue){
+            label.classList.add('selected');
+          }
+        }
+      });
+    }
+
+    groups.forEach(function(group){
+      group.addEventListener('change', function(){ updateStars(group); });
+      group.addEventListener('pointerover', function(event){
+        var target = event.target.closest('label.star');
+        if(!target) return;
+        var labels = Array.prototype.slice.call(group.querySelectorAll('label.star'));
+        var hoverValue = parseFloat(target.getAttribute('data-value')) || 0;
+        labels.forEach(function(label){
+          var value = parseFloat(label.getAttribute('data-value')) || 0;
+          if(value >= hoverValue){
+            label.classList.add('selected');
+          } else {
+            label.classList.remove('selected');
+          }
+        });
+      });
+      group.addEventListener('pointerleave', function(){ updateStars(group); });
+      updateStars(group);
     });
   }
 
@@ -786,54 +828,6 @@
     if(pcEl) pcEl.value = '';
     if(msgEl) msgEl.value = '';
     document.querySelectorAll('input[name="reviewRating"]').forEach(function(r){ r.checked = false; if(r.parentElement) r.parentElement.classList.remove('selected'); });
-  };
-
-  window.fileChosen = function(input){
-    var msg = document.getElementById('extraDataMsg');
-    var sendErrorEl = document.getElementById('sendErrorExtra');
-    var btn = document.getElementById('btnSubmitExtra');
-    var paisEl = document.getElementById('pais');
-    var edadEl = document.getElementById('edadExtra');
-    var generoEl = document.getElementById('generoExtra');
-    var juegoEl = document.getElementById('juegoExtra');
-
-    // Honeypot: mismo criterio que en submitReserva, simulamos éxito
-    // sin enviar nada a la Sheet.
-    var honeypotElExtra = document.getElementById('empresaWeb');
-    if(honeypotElExtra && honeypotElExtra.value){
-      if(msg) msg.style.display = 'block';
-      if(btn){ btn.disabled = true; btn.textContent = 'Enviado'; }
-      return;
-    }
-
-    if(sendErrorEl) sendErrorEl.classList.remove('show');
-    if(msg) msg.style.display = 'none';
-    if(btn){ btn.disabled = true; btn.textContent = 'Enviando...'; }
-
-    var result = null;
-    try{
-      result = await sendToSheet({
-        type: 'extra',
-        correo: RESERVA_INFO.correo || '',
-        nombreCompleto: RESERVA_INFO.nombreCompleto || '',
-        pais: paisEl ? paisEl.value : '',
-        edad: edadEl ? edadEl.value : '',
-        genero: generoEl ? generoEl.value : '',
-        juegoExtra: juegoEl ? juegoEl.value : ''
-      });
-    }catch(e){
-      console.error(e);
-      result = null;
-    }
-
-    if(btn){ btn.disabled = false; btn.textContent = 'Enviar'; }
-
-    if(!result || !result.ok){
-      if(sendErrorEl) sendErrorEl.classList.add('show');
-      return;
-    }
-
-    if(msg) msg.style.display = 'block';
   };
 
   window.fileChosen = function(input){
