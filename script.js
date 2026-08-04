@@ -526,7 +526,7 @@
         var hoverValue = parseFloat(target.getAttribute('data-value')) || 0;
         labels.forEach(function(label){
           var value = parseFloat(label.getAttribute('data-value')) || 0;
-          if(value >= hoverValue){
+          if(value <= hoverValue){
             label.classList.add('selected');
           } else {
             label.classList.remove('selected');
