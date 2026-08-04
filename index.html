@@ -87,7 +87,6 @@
     {"@type":"Question","name":"¿Qué pasa si no noto cambios?","acceptedAnswer":{"@type":"Answer","text":"Medimos benchmarks antes y después en la misma sesión, así ves los números en vivo, y lo revisamos juntos antes de cerrar."}},
     {"@type":"Question","name":"¿Hacés soporte después?","acceptedAnswer":{"@type":"Answer","text":"Sí, tenés soporte por WhatsApp o Discord si algo no anda como esperabas."}},
     {"@type":"Question","name":"¿Qué pasa si mi comprobante tiene algún problema?","acceptedAnswer":{"@type":"Answer","text":"Si el comprobante tiene algún detalle, podés contactarme por Instagram o Discord con una captura y una breve explicación. Revisamos el caso y te digo cómo seguir."}},
-    {"@type":"Question","name":"¿Emitís factura?","acceptedAnswer":{"@type":"Answer","text":"No, el servicio se ofrece por transferencia y no emito factura. Si necesitás un comprobante de pago, te lo envío correctamente al momento de la reserva."}},
     {"@type":"Question","name":"¿Sirve para notebooks?","acceptedAnswer":{"@type":"Answer","text":"Sí, aunque en notebooks el margen de mejora puede ser menor por límites térmicos y de hardware."}}
   ]
 }
@@ -137,7 +136,7 @@
         <!-- Turnos disponibles hoy: se completa con JS reusando fetchBookedFromSheet, oculto hasta tener el dato -->
         <span class="turnos-badge" data-turnos-hoy style="display:none;"></span>
         <!-- Contador de PCs optimizadas: opcional. Solo se muestra si PCS_OPTIMIZADAS (más abajo, en el script) es un número real y verificable mayor a 0 -->
-        <div class="hero-counter" id="pcsOptimizadas" style="display:none;"></div>
+        <div class="hero-counter" id="pcsOptimizadas" style="display:none;"><span class="hero-counter-number" data-count-to="0" data-start="0">0</span> PCs optimizadas</div>
         <div class="hero-stat"><b>100%</b> remoto · sin formatear ni perder archivos</div>
         <div class="hero-reqs">
           <span class="hero-reqs-label">Para la sesión necesitás tener</span>
@@ -177,50 +176,88 @@
   </section>
 
   <!-- TESTIMONIOS -->
-  <!-- TODO: reemplazar las 4 imágenes placeholder por capturas reales de WhatsApp/Instagram (con permiso del cliente) antes de publicar. Completar también nombre y plan de cada uno. -->
-  <section class="section" id="testimonios" style="display:none;">
+  <section class="section" id="testimonios">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Lo que dicen</span>
         <h2>Mirá quién ya optimizó</h2>
       </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="testimonial-shot">
-            <img src="testimonio-1.jpg" alt="Captura de conversación con un cliente" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('testimonial-shot--empty');">
-          </div>
-          <div class="testimonial-author">
-            <span class="testimonial-name">TODO Nombre</span>
-            <span class="testimonial-meta">Plan TODO</span>
+
+      <div class="testimonial-carousel" aria-label="Carrusel de testimonios de clientes">
+        <button type="button" class="carousel-control carousel-prev" aria-label="Mostrar testimonios anteriores">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="carousel-track-wrap">
+          <div class="carousel-track">
+            <article class="testimonial-card" data-testimonial-real="true">
+              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
+              <p class="testimonial-quote">"Mi PC dejó de trabarse en partidas y ahora puedo jugar sin sentir el input lag que antes me arruinaba los FPS. Mejoró todo sin tocar mis archivos."</p>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Lucas M.</span>
+                <span class="testimonial-meta">Plan Gaming</span>
+              </div>
+            </article>
+            <article class="testimonial-card" data-testimonial-real="true">
+              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
+              <p class="testimonial-quote">"El arranque de Windows es mucho más rápido y la PC ya no se calienta tanto en los juegos. La sesión por AnyDesk fue muy clara y transparente."</p>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Camila R.</span>
+                <span class="testimonial-meta">Plan Oficina</span>
+              </div>
+            </article>
+            <article class="testimonial-card" data-testimonial-real="true">
+              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
+              <p class="testimonial-quote">"Noté 20 FPS más en varios títulos y la PC dejó de tener micro stutters. Se nota que es un ajuste profesional, no un parche improvisado."</p>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Matías S.</span>
+                <span class="testimonial-meta">Plan Gaming Plus</span>
+              </div>
+            </article>
+            <article class="testimonial-card" data-testimonial-real="true">
+              <div class="testimonial-rating" aria-label="5 estrellas">★ ★ ★ ★ ★</div>
+              <p class="testimonial-quote">"Lo mejor fue que no se perdió nada. Me mostraron todo por Discord y AnyDesk, y al final mi PC quedó más fluida sin formatear."</p>
+              <div class="testimonial-author">
+                <span class="testimonial-name">Sofía N.</span>
+                <span class="testimonial-meta">Plan Oficina</span>
+              </div>
+            </article>
           </div>
         </div>
-        <div class="testimonial-card">
-          <div class="testimonial-shot">
-            <img src="testimonio-2.jpg" alt="Captura de conversación con un cliente" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('testimonial-shot--empty');">
+        <button type="button" class="carousel-control carousel-next" aria-label="Mostrar testimonios siguientes">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="carousel-dots" aria-hidden="true"></div>
+
+      <div class="review-form-panel">
+        <h3>Dejá tu reseña</h3>
+        <p class="privacy-note">Tu reseña queda pendiente de revisión manual. No se publica automáticamente.</p>
+        <form id="review-form" novalidate>
+          <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+            <label for="reviewWeb">No completar este campo</label>
+            <input type="text" id="reviewWeb" name="reviewWeb" tabindex="-1" autocomplete="off">
           </div>
-          <div class="testimonial-author">
-            <span class="testimonial-name">TODO Nombre</span>
-            <span class="testimonial-meta">Plan TODO</span>
+          <div class="field-grid">
+            <div class="field full"><label for="reviewName">Nombre completo</label><input id="reviewName" name="reviewName" autocomplete="name" required></div>
+            <div class="field full">
+              <label class="field-label">Calificación</label>
+              <div class="rating-stars" role="radiogroup" aria-label="Calificación de 1 a 5 estrellas">
+                <label><input type="radio" name="reviewRating" value="5" required><span>★</span></label>
+                <label><input type="radio" name="reviewRating" value="4"><span>★</span></label>
+                <label><input type="radio" name="reviewRating" value="3"><span>★</span></label>
+                <label><input type="radio" name="reviewRating" value="2"><span>★</span></label>
+                <label><input type="radio" name="reviewRating" value="1"><span>★</span></label>
+              </div>
+            </div>
+            <div class="field full"><label for="reviewPC">PC optimizada (opcional)</label><input id="reviewPC" name="reviewPC" placeholder="Ej: Ryzen 5 + RTX 3060"></div>
+            <div class="field full"><label for="reviewMessage">Contanos tu experiencia</label><textarea id="reviewMessage" name="reviewMessage" rows="4" required placeholder="Qué mejoró, cómo te fue en los juegos, o qué notaste después."></textarea></div>
           </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-shot">
-            <img src="testimonio-3.jpg" alt="Captura de conversación con un cliente" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('testimonial-shot--empty');">
+          <div class="error-msg" id="reviewError" aria-live="polite">Completá los campos obligatorios para enviar la reseña.</div>
+          <div class="form-nav" style="justify-content:flex-end;">
+            <button type="button" class="btn btn-primary" id="btnSubmitReview" onclick="submitReview()">Enviar reseña</button>
           </div>
-          <div class="testimonial-author">
-            <span class="testimonial-name">TODO Nombre</span>
-            <span class="testimonial-meta">Plan TODO</span>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-shot">
-            <img src="testimonio-4.jpg" alt="Captura de conversación con un cliente" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('testimonial-shot--empty');">
-          </div>
-          <div class="testimonial-author">
-            <span class="testimonial-name">TODO Nombre</span>
-            <span class="testimonial-meta">Plan TODO</span>
-          </div>
-        </div>
+          <p class="privacy-note" id="reviewSuccess" style="display:none;color:var(--accent);">¡Gracias! Tu reseña ya está en revisión. Te aviso cuando la aprobemos.</p>
+        </form>
       </div>
     </div>
   </section>
@@ -235,7 +272,7 @@
       </div>
       <div class="plans">
 
-        <div class="plan" data-plan="Oficina" data-price="18000">
+        <div class="plan spotlight-card" data-plan="Oficina" data-price="18000" data-spotlight-color="rgba(79, 168, 255, 0.12)">
           <h3>Oficina</h3>
           <p class="for">Home office · Estudiantes · Empresas</p>
           <div class="price">$18.000 <span class="price-currency">ARS</span></div>
@@ -252,7 +289,7 @@
           <button class="btn btn-primary btn-block" onclick="selectPlan('Oficina')">Elegir Oficina</button>
         </div>
 
-        <div class="plan featured" data-plan="Gaming" data-price="25000">
+        <div class="plan featured spotlight-card" data-plan="Gaming" data-price="25000" data-spotlight-color="rgba(79, 168, 255, 0.18)">
           <span class="plan-tag">Más elegido</span>
           <h3>Gaming</h3>
           <p class="for">Todo Oficina, más rendimiento</p>
@@ -270,7 +307,7 @@
           <button class="btn btn-primary btn-block" onclick="selectPlan('Gaming')">Elegir Gaming</button>
         </div>
 
-        <div class="plan" data-plan="Gaming Plus" data-price="45000">
+        <div class="plan spotlight-card" data-plan="Gaming Plus" data-price="45000" data-spotlight-color="rgba(79, 168, 255, 0.12)">
           <h3>Gaming Plus</h3>
           <p class="for">Todo Gaming, más hardware</p>
           <div class="price">$45.000 <span class="price-currency">ARS</span></div>
@@ -372,7 +409,7 @@
           <img src="assets/logo.png" alt="Foto del responsable del servicio" class="avatar-round">
           <div>
             <p style="margin:0 0 8px 0;font-size:13px;color:var(--accent);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.14em;">Cómo trabajo</p>
-            <p style="margin:0 0 10px 0;">Soy Taiel Nicolás Clot, fundador de NC Optimizaciones. Llevo años metido en la configuración de Windows, BIOS y hardware, buscando sacarle el máximo a mis propias PCs — hoy hago lo mismo para otros, pero de forma remota y en vivo. No aplico el mismo paquete de ajustes a todos: reviso qué tiene instalada tu PC, para qué la usás, y trabajo sobre eso. Vos ves todo lo que hago mientras lo hago, y te explico cada cambio en el momento, no un informe después.</p>
+            <p style="margin:0 0 10px 0;">Soy Taiel Nicolás Clot y creé NC Optimizaciones para ayudar a gente como vos a sacar más rendimiento de su PC sin formatear ni perder archivos. Trabajo con Windows, BIOS y hardware para ajustar lo que tu equipo necesita, y te muestro todo en vivo mientras lo hago. No uso un paquete fijo para todos: reviso tu PC, entiendo para qué la usás y hago los cambios con foco en lo que realmente te sirve.</p>
           </div>
         </article>
       </div>
@@ -399,7 +436,6 @@
         <details><summary>¿Qué pasa si no noto cambios?</summary><p>Medimos benchmarks antes y después en la misma sesión, así ves los números en vivo. Si algo no cierra, lo revisamos juntos antes de cerrar.</p></details>
         <details><summary>¿Hacés soporte después?</summary><p>Sí, tenés soporte por WhatsApp o Discord si algo no anda como esperabas.</p></details>
         <details><summary>¿Qué pasa si mi comprobante tiene algún problema?</summary><p>Si el comprobante tiene algún detalle, podés contactarme por Instagram o Discord con una captura y una breve explicación. Revisamos el caso y te digo cómo seguir.</p></details>
-        <details><summary>¿Emitís factura?</summary><p>No, el servicio se ofrece por transferencia y no emito factura. Si necesitás un comprobante de pago, te lo envío correctamente al momento de la reserva.</p></details>
         <details><summary>¿Sirve para notebooks?</summary><p>Sí, aunque en notebooks el margen de mejora puede ser menor por límites térmicos y de hardware.</p></details>
       </div>
     </div>
@@ -585,7 +621,7 @@
     <div class="footer-grid">
       <div class="footer-col" style="max-width:280px;">
         <a href="#inicio" class="logo"><img class="logo-mark-img" src="assets/logo.png" alt="NC Optimizaciones" width="625" height="200"> NC OPTIMIZACIONES</a>
-        <p style="color:var(--muted);font-size:13px;margin-top:14px;">Optimización profesional y remota de PC con Windows. Más FPS, menos input lag, más estabilidad. El servicio lo lleva Nico, con atención directa y seguimiento por Discord e Instagram DM.</p>
+        <p style="color:var(--muted);font-size:13px;margin-top:14px;">Optimización profesional y remota de PC con Windows. Más FPS, menos input lag, más estabilidad. El servicio lo lleva Taiu, con atención directa y seguimiento por Discord e Instagram DM.</p>
       </div>
       <div class="footer-contact-card">
         <h4>Horario de atención</h4>

@@ -5,7 +5,7 @@
 > **solo este archivo y el `CHANGELOG.md`** y entender el proyecto sin
 > tener que re-analizar todo el repositorio desde cero.
 >
-> Última actualización: 2026-08-03
+> Última actualización: 2026-08-04
 
 ---
 

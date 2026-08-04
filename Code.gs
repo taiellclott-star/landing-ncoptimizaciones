@@ -167,7 +167,7 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
 
-    if (data.type !== 'reserva' && data.type !== 'extra') {
+    if (data.type !== 'reserva' && data.type !== 'extra' && data.type !== 'review') {
       return ContentService
         .createTextOutput(JSON.stringify({ ok: false, error: 'Tipo de solicitud inválido' }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -194,6 +194,15 @@ function doPost(e) {
       }
     }
 
+    if (data.type === 'review') {
+      var errorValidacion = validarReview(data);
+      if (errorValidacion) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ ok: false, reason: 'validation_error', error: errorValidacion }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
 
     if (data.type === 'reserva') {
@@ -209,6 +218,8 @@ function doPost(e) {
       guardarReserva(ss, data);
     } else if (data.type === 'extra') {
       guardarDatosExtra(ss, data);
+    } else if (data.type === 'review') {
+      guardarResena(ss, data);
     }
 
     enviarNotificacion(data);
@@ -437,6 +448,28 @@ function guardarDatosExtra(ss, data) {
   ]);
 }
 
+function validarReview(data) {
+  if (!String(data.nombreCompleto || '').trim()) return 'Falta el nombre completo.';
+  if (!String(data.rating || '').trim()) return 'Falta la calificación.';
+  if (!String(data.mensaje || '').trim()) return 'Falta el mensaje de la reseña.';
+  return null;
+}
+
+function guardarResena(ss, data) {
+  var sheet = ss.getSheetByName('Reseñas');
+  if (!sheet) {
+    throw new Error('No existe la pestaña "Reseñas" en la planilla.');
+  }
+  sheet.appendRow([
+    new Date(),
+    sanitizarTexto(data.nombreCompleto, 200),
+    sanitizarTexto(data.rating, 2),
+    sanitizarTexto(data.pc, 200),
+    sanitizarTexto(data.mensaje, 1000),
+    'pendiente'
+  ]);
+}
+
 function enviarNotificacion(data) {
   try {
     if (!data || typeof data !== 'object') {
@@ -467,6 +500,14 @@ function enviarNotificacion(data) {
         'Edad: ' + (data.edad || '') + '\n' +
         'Género: ' + (data.genero || '') + '\n' +
         'Juego principal: ' + (data.juegoExtra || '');
+    } else if (data.type === 'review') {
+      asunto = '📝 Nueva reseña pendiente: ' + (data.nombreCompleto || 'Sin nombre');
+      cuerpo =
+        'Nombre: ' + (data.nombreCompleto || '') + '\n' +
+        'Calificación: ' + (data.rating || '') + '\n' +
+        'PC optimizada: ' + (data.pc || '') + '\n' +
+        'Mensaje: ' + (data.mensaje || '') + '\n' +
+        '\nRevisá la reseña en la pestaña "Reseñas" de la planilla.';
     } else {
       return; // tipo desconocido, no mandamos mail
     }

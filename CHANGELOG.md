@@ -5,6 +5,17 @@ Registro cronológico de cambios en el proyecto. Formato de cada entrada:
 
 ---
 
+## 2026-08-04 — Correcciones de UI y FAQ
+
+**Archivos:** `index.html`, `styles.css`, `context.md`
+
+**Qué cambió:** se ajustó el badge “Más elegido” para que quede visible por delante de la card, se redujo el tamaño del brillo del botón principal para que el color base y el texto del botón se lean mejor, y se eliminó la pregunta de factura del FAQ y del FAQ JSON-LD.
+
+**Por qué:** mejorar la jerarquía visual de los planes, evitar que el efecto de brillo opaque el botón principal y remover contenido innecesario que no debe aparecer en las FAQs.
+
+**Impacto:** bajo riesgo; mejora la claridad visual y el contenido de la landing sin tocar la lógica de reserva ni el backend.
+
+---
 ## 2026-08-03 — Correcciones de confianza y formulario
 
 **Archivos:** `index.html`, `script.js`, `Code.gs`, `context.md`

@@ -298,7 +298,7 @@
       var n = contarTurnosDisponiblesHoy(booked);
       badges.forEach(function(el){
         if(n > 0){
-          el.textContent = n === 1 ? '🟢 Queda 1 turno disponible hoy' : '🟢 Quedan ' + n + ' turnos disponibles hoy';
+          el.textContent = n === 1 ? 'Queda 1 turno disponible hoy' : 'Quedan ' + n + ' turnos disponibles hoy';
           el.style.display = '';
         } else {
           el.style.display = 'none'; // sin turnos hoy: mejor ocultar el badge que desalentar con un "0"
@@ -422,13 +422,24 @@
     mostrarContenidoRealVideo();
     mostrarContenidoRealTestimonios();
     initSpecularButtons();
+    initSpotlightCards();
 
     // Contador opcional "+XX PCs optimizadas". Completá PCS_OPTIMIZADAS más
     // abajo SOLO con un número real y verificable; si queda en 0 el bloque
     // no se muestra.
     var pcsEl = document.getElementById('pcsOptimizadas');
     if(pcsEl && PCS_OPTIMIZADAS > 0){
-      pcsEl.textContent = '+' + PCS_OPTIMIZADAS + ' PCs optimizadas';
+      var countEl = pcsEl.querySelector('[data-count-to]');
+      if(countEl){
+        countEl.setAttribute('data-count-to', PCS_OPTIMIZADAS);
+        countEl.setAttribute('data-start', '0');
+        if('IntersectionObserver' in window){
+          // Si ya está visible en el hero, animar manualmente.
+          requestAnimationFrame(function(){ animateCount(countEl); });
+        } else {
+          countEl.textContent = PCS_OPTIMIZADAS;
+        }
+      }
       pcsEl.style.display = '';
     }
   });
@@ -456,6 +467,98 @@
         btn.style.setProperty('--specular-y','40%');
       });
     });
+  }
+
+  function initSpotlightCards(){
+    var cards = document.querySelectorAll('.spotlight-card');
+    if(!cards.length) return;
+
+    cards.forEach(function(card){
+      var color = card.getAttribute('data-spotlight-color') || 'rgba(79, 168, 255, 0.14)';
+      card.style.setProperty('--spotlight-color', color);
+      card.style.setProperty('--mouse-x', '50%');
+      card.style.setProperty('--mouse-y', '50%');
+
+      card.addEventListener('pointermove', function(event){
+        var rect = card.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        var px = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        var py = Math.max(0, Math.min(100, (y / rect.height) * 100));
+        card.style.setProperty('--mouse-x', px.toFixed(2) + '%');
+        card.style.setProperty('--mouse-y', py.toFixed(2) + '%');
+      });
+
+      card.addEventListener('pointerleave', function(){
+        card.style.setProperty('--mouse-x', '50%');
+        card.style.setProperty('--mouse-y', '50%');
+      });
+    });
+  }
+
+  function initTestimonialCarousel(){
+    var section = document.getElementById('testimonios');
+    if(!section) return;
+    var track = section.querySelector('.carousel-track');
+    var cards = track ? Array.prototype.slice.call(track.querySelectorAll('.testimonial-card')) : [];
+    var prev = section.querySelector('.carousel-prev');
+    var next = section.querySelector('.carousel-next');
+    var dotsWrap = section.querySelector('.carousel-dots');
+    if(!track || cards.length === 0 || !prev || !next || !dotsWrap) return;
+
+    var state = { index: 0, visible: 1, maxIndex: 0 };
+
+    function getVisibleCount(){
+      var width = window.innerWidth;
+      if(width >= 1040) return 3;
+      if(width >= 720) return 2;
+      return 1;
+    }
+
+    function createDots(){
+      dotsWrap.innerHTML = '';
+      for(var i = 0; i <= state.maxIndex; i++){
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', 'Ir al testimonio ' + (i + 1));
+        (function(position){
+          dot.addEventListener('click', function(){ state.index = position; update(); });
+        })(i);
+        dotsWrap.appendChild(dot);
+      }
+    }
+
+    function update(){
+      state.visible = getVisibleCount();
+      state.maxIndex = Math.max(0, cards.length - state.visible);
+      if(state.index > state.maxIndex) state.index = state.maxIndex;
+      var cardWidth = cards[0].getBoundingClientRect().width;
+      var gap = 18;
+      track.style.transform = 'translateX(' + (-state.index * (cardWidth + gap)) + 'px)';
+      prev.disabled = state.index === 0;
+      next.disabled = state.index === state.maxIndex;
+      var dots = dotsWrap.querySelectorAll('.carousel-dot');
+      dots.forEach(function(dot, idx){
+        dot.classList.toggle('active', idx === state.index);
+      });
+    }
+
+    prev.addEventListener('click', function(){
+      state.index = Math.max(0, state.index - 1);
+      update();
+    });
+    next.addEventListener('click', function(){
+      state.index = Math.min(state.maxIndex, state.index + 1);
+      update();
+    });
+
+    window.addEventListener('resize', function(){
+      update();
+    });
+
+    createDots();
+    update();
   }
 
   // ---- Plan selection from pricing cards ----
@@ -630,7 +733,62 @@
     if(panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
   };
 
-  window.submitExtraData = async function(){
+  window.submitReview = async function(){
+    var errorEl = document.getElementById('reviewError');
+    var successEl = document.getElementById('reviewSuccess');
+    var btn = document.getElementById('btnSubmitReview');
+    var honeypotEl = document.getElementById('reviewWeb');
+    var nameEl = document.getElementById('reviewName');
+    var ratingEl = document.querySelector('input[name="reviewRating"]:checked');
+    var pcEl = document.getElementById('reviewPC');
+    var msgEl = document.getElementById('reviewMessage');
+
+    if(errorEl){ errorEl.classList.remove('show'); }
+    if(successEl){ successEl.style.display = 'none'; }
+
+    if(honeypotEl && honeypotEl.value){
+      if(successEl) successEl.style.display = 'block';
+      if(btn){ btn.disabled = true; btn.textContent = 'Enviado'; }
+      return;
+    }
+
+    if(!nameEl || !ratingEl || !msgEl || !nameEl.value.trim() || !msgEl.value.trim()){
+      if(errorEl){ errorEl.textContent = 'Completá tu nombre, la calificación y el mensaje para enviar la reseña.'; errorEl.classList.add('show'); }
+      return;
+    }
+
+    if(btn){ btn.disabled = true; btn.textContent = 'Enviando...'; }
+
+    var result = null;
+    try{
+      result = await sendToSheet({
+        type: 'review',
+        nombreCompleto: nameEl.value.trim(),
+        rating: ratingEl.value,
+        pc: pcEl ? pcEl.value.trim() : '',
+        mensaje: msgEl.value.trim(),
+      });
+    }catch(e){
+      console.error(e);
+      result = null;
+    }
+
+    if(btn){ btn.disabled = false; btn.textContent = 'Enviar reseña'; }
+
+    if(!result || !result.ok){
+      if(errorEl){ errorEl.textContent = 'No se pudo enviar tu reseña ahora. Intentá de nuevo en unos minutos.'; errorEl.classList.add('show'); }
+      return;
+    }
+
+    if(successEl){ successEl.style.display = 'block'; }
+    if(btn){ btn.disabled = true; }
+    nameEl.value = '';
+    if(pcEl) pcEl.value = '';
+    if(msgEl) msgEl.value = '';
+    document.querySelectorAll('input[name="reviewRating"]').forEach(function(r){ r.checked = false; if(r.parentElement) r.parentElement.classList.remove('selected'); });
+  };
+
+  window.fileChosen = function(input){
     var msg = document.getElementById('extraDataMsg');
     var sendErrorEl = document.getElementById('sendErrorExtra');
     var btn = document.getElementById('btnSubmitExtra');
