@@ -541,14 +541,22 @@
   function initTestimonialCarousel(){
     var section = document.getElementById('testimonios');
     if(!section) return;
+    var trackWrap = section.querySelector('.carousel-track-wrap');
     var track = section.querySelector('.carousel-track');
     var cards = track ? Array.prototype.slice.call(track.querySelectorAll('.testimonial-card')) : [];
-    var prev = section.querySelector('.carousel-prev');
-    var next = section.querySelector('.carousel-next');
-    var dotsWrap = section.querySelector('.carousel-dots');
-    if(!track || cards.length === 0 || !prev || !next || !dotsWrap) return;
+    if(!trackWrap || !track || cards.length === 0) return;
 
-    var state = { index: 0, visible: 1, maxIndex: 0 };
+    var state = {
+      index: 0,
+      visible: 1,
+      maxIndex: 0,
+      isDragging: false,
+      startX: 0,
+      startTranslate: 0,
+      currentTranslate: 0,
+      cardWidth: 0,
+      gap: 18
+    };
 
     function getVisibleCount(){
       var width = window.innerWidth;
@@ -557,49 +565,59 @@
       return 1;
     }
 
-    function createDots(){
-      dotsWrap.innerHTML = '';
-      for(var i = 0; i <= state.maxIndex; i++){
-        var dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'carousel-dot';
-        dot.setAttribute('aria-label', 'Ir al testimonio ' + (i + 1));
-        (function(position){
-          dot.addEventListener('click', function(){ state.index = position; update(); });
-        })(i);
-        dotsWrap.appendChild(dot);
-      }
+    function clamp(value, min, max){
+      return Math.min(Math.max(value, min), max);
     }
 
     function update(){
       state.visible = getVisibleCount();
       state.maxIndex = Math.max(0, cards.length - state.visible);
       if(state.index > state.maxIndex) state.index = state.maxIndex;
-      var cardWidth = cards[0].getBoundingClientRect().width;
-      var gap = 18;
-      track.style.transform = 'translateX(' + (-state.index * (cardWidth + gap)) + 'px)';
-      prev.disabled = state.index === 0;
-      next.disabled = state.index === state.maxIndex;
-      var dots = dotsWrap.querySelectorAll('.carousel-dot');
-      dots.forEach(function(dot, idx){
-        dot.classList.toggle('active', idx === state.index);
-      });
+      state.cardWidth = cards[0].getBoundingClientRect().width;
+      state.currentTranslate = -state.index * (state.cardWidth + state.gap);
+      track.style.transition = 'transform .36s ease';
+      track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
     }
 
-    prev.addEventListener('click', function(){
-      state.index = Math.max(0, state.index - 1);
+    function beginDrag(event){
+      if(event.pointerType === 'mouse' && event.button !== 0) return;
+      state.isDragging = true;
+      state.startX = event.clientX;
+      state.startTranslate = state.currentTranslate;
+      track.style.transition = 'none';
+      trackWrap.classList.add('dragging');
+      trackWrap.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    }
+
+    function moveDrag(event){
+      if(!state.isDragging) return;
+      var delta = event.clientX - state.startX;
+      state.currentTranslate = state.startTranslate + delta;
+      var maxTranslate = 100;
+      var minTranslate = -((state.maxIndex) * (state.cardWidth + state.gap)) - 100;
+      state.currentTranslate = clamp(state.currentTranslate, minTranslate, maxTranslate);
+      track.style.transform = 'translateX(' + state.currentTranslate + 'px)';
+    }
+
+    function endDrag(event){
+      if(!state.isDragging) return;
+      state.isDragging = false;
+      trackWrap.classList.remove('dragging');
+      var index = Math.round(-state.currentTranslate / (state.cardWidth + state.gap));
+      state.index = clamp(index, 0, state.maxIndex);
       update();
-    });
-    next.addEventListener('click', function(){
-      state.index = Math.min(state.maxIndex, state.index + 1);
-      update();
-    });
+    }
+
+    trackWrap.addEventListener('pointerdown', beginDrag);
+    trackWrap.addEventListener('pointermove', moveDrag);
+    trackWrap.addEventListener('pointerup', endDrag);
+    trackWrap.addEventListener('pointercancel', endDrag);
 
     window.addEventListener('resize', function(){
       update();
     });
 
-    createDots();
     update();
   }
 
