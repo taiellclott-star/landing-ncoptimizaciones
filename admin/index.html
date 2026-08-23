@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Panel · NC Optimizaciones</title>
 <meta name="robots" content="noindex, nofollow">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  // Fallback: si unpkg falla, probamos con jsdelivr
+  window.addEventListener('error', function(e){
+    if(e.target && e.target.tagName === 'SCRIPT' && e.target.src.indexOf('unpkg.com/@supabase') !== -1){
+      var fallback = document.createElement('script');
+      fallback.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      document.head.appendChild(fallback);
+    }
+  }, true);
+</script>
 <style>
   :root{
     --bg:#0a0c10; --panel:#12151b; --line:#232833; --text:#e8ecf1; --muted:#8b93a3; --accent:#4fa8ff;
