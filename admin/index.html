@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · NC Optimizaciones</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#0a0c10; --panel:#12151b; --line:#232833; --text:#e8ecf1; --muted:#8b93a3; --accent:#4fa8ff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px;}
+  h1{font-size:20px;margin:0 0 4px;}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
+
+  /* login */
+  #loginBox{max-width:360px;margin:80px auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:28px;}
+  #loginBox h2{margin-top:0;font-size:18px;}
+  #loginBox input{width:100%;padding:10px 12px;margin-bottom:12px;border-radius:8px;border:1px solid var(--line);background:#0d1016;color:var(--text);}
+  #loginBox button{width:100%;padding:10px;border-radius:8px;border:none;background:var(--accent);color:#04121f;font-weight:600;cursor:pointer;}
+  #loginError{color:#ff6b6b;font-size:13px;margin-top:8px;display:none;}
+
+  /* dashboard */
+  #dashboard{display:none;}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  .toolbar input, .toolbar select{padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);}
+  .toolbar button{padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;}
+  .toolbar .spacer{flex:1;}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px;}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;}
+  tr:last-child td{border-bottom:none;}
+  .estado{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+  .estado-pendiente{background:#3a2f0f;color:#ffcf5c;}
+  .estado-confirmado{background:#0f3a1f;color:#5cffa0;}
+  .estado-cancelado{background:#3a0f0f;color:#ff6b6b;}
+  select.estado-select{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:6px;padding:3px 6px;font-size:12px;}
+  a.comprobante-link{color:var(--accent);text-decoration:none;}
+  a.comprobante-link:hover{text-decoration:underline;}
+  #logoutBtn{margin-left:auto;}
+  #empty{color:var(--muted);text-align:center;padding:40px 0;}
+</style>
+</head>
+<body>
+
+<div id="loginBox">
+  <h2>Panel NC Optimizaciones</h2>
+  <p class="sub">Entrá con tu cuenta de admin.</p>
+  <input id="loginEmail" type="email" placeholder="Correo" autocomplete="username">
+  <input id="loginPass" type="password" placeholder="Contraseña" autocomplete="current-password">
+  <button id="loginBtn">Entrar</button>
+  <div id="loginError">Correo o contraseña incorrectos.</div>
+</div>
+
+<div class="wrap" id="dashboard">
+  <div class="toolbar">
+    <div>
+      <h1>Reservas</h1>
+      <p class="sub" style="margin:0;">Turnos cargados desde el formulario</p>
+    </div>
+    <div class="spacer"></div>
+    <input id="filtroFecha" type="date">
+    <select id="filtroEstado">
+      <option value="">Todos los estados</option>
+      <option value="pendiente">Pendiente</option>
+      <option value="confirmado">Confirmado</option>
+      <option value="cancelado">Cancelado</option>
+    </select>
+    <button id="refreshBtn">Actualizar</button>
+    <button id="logoutBtn">Salir</button>
+  </div>
+
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>Fecha</th><th>Hora</th><th>Nombre</th><th>Correo</th><th>WhatsApp</th>
+        <th>Discord</th><th>Plan</th><th>Comprobante</th><th>Comentarios</th><th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tablaBody"></tbody>
+  </table>
+  <div id="empty" style="display:none;">No hay reservas para este filtro.</div>
+</div>
+
+<script>
+  // Completá con los mismos valores que en frontend/script.js
+  var SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+  var SUPABASE_ANON_KEY = 'TU-ANON-KEY-ACA';
+
+  var supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var loginBox = document.getElementById('loginBox');
+  var dashboard = document.getElementById('dashboard');
+  var loginError = document.getElementById('loginError');
+
+  function showDashboard(){
+    loginBox.style.display = 'none';
+    dashboard.style.display = 'block';
+    cargarReservas();
+  }
+
+  function showLogin(){
+    loginBox.style.display = 'block';
+    dashboard.style.display = 'none';
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async function(){
+    loginError.style.display = 'none';
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPass').value;
+    var { error } = await supa.auth.signInWithPassword({ email: email, password: password });
+    if(error){
+      loginError.style.display = 'block';
+      return;
+    }
+    showDashboard();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async function(){
+    await supa.auth.signOut();
+    showLogin();
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', cargarReservas);
+  document.getElementById('filtroFecha').addEventListener('change', cargarReservas);
+  document.getElementById('filtroEstado').addEventListener('change', cargarReservas);
+
+  async function cargarReservas(){
+    var body = document.getElementById('tablaBody');
+    var empty = document.getElementById('empty');
+    body.innerHTML = '';
+
+    var query = supa.from('reservas').select('*').order('fecha', { ascending: false }).order('horario', { ascending: false });
+
+    var fecha = document.getElementById('filtroFecha').value;
+    var estado = document.getElementById('filtroEstado').value;
+    if(fecha) query = query.eq('fecha', fecha);
+    if(estado) query = query.eq('estado', estado);
+
+    var { data, error } = await query;
+    if(error){
+      console.error(error);
+      empty.style.display = 'block';
+      empty.textContent = 'Error cargando reservas: ' + error.message;
+      return;
+    }
+
+    if(!data || !data.length){
+      empty.style.display = 'block';
+      empty.textContent = 'No hay reservas para este filtro.';
+      return;
+    }
+    empty.style.display = 'none';
+
+    for (var i = 0; i < data.length; i++){
+      var r = data[i];
+      var tr = document.createElement('tr');
+
+      var comprobanteHtml = '—';
+      if(r.comprobante_path){
+        comprobanteHtml = '<a href="#" class="comprobante-link" data-path="' + r.comprobante_path + '">Ver</a>';
+      }
+
+      tr.innerHTML =
+        '<td>' + (r.fecha || '') + '</td>' +
+        '<td>' + (r.horario || '') + '</td>' +
+        '<td>' + escapeHtml(r.nombre_completo) + '</td>' +
+        '<td>' + escapeHtml(r.correo) + '</td>' +
+        '<td>' + escapeHtml(r.whatsapp) + '</td>' +
+        '<td>' + escapeHtml(r.discord || '') + '</td>' +
+        '<td>' + escapeHtml(r.plan) + '</td>' +
+        '<td>' + comprobanteHtml + '</td>' +
+        '<td style="white-space:normal;max-width:220px;">' + escapeHtml(r.comentarios || '') + '</td>' +
+        '<td></td>';
+
+      var estadoTd = tr.lastElementChild;
+      var select = document.createElement('select');
+      select.className = 'estado-select';
+      ['pendiente','confirmado','cancelado'].forEach(function(op){
+        var o = document.createElement('option');
+        o.value = op; o.textContent = op;
+        if(op === r.estado) o.selected = true;
+        select.appendChild(o);
+      });
+      select.addEventListener('change', async function(id, sel){
+        return async function(){
+          await supa.from('reservas').update({ estado: sel.value }).eq('id', id);
+        };
+      }(r.id, select));
+      estadoTd.appendChild(select);
+
+      body.appendChild(tr);
+    }
+
+    // links de comprobante: signed URL generada al click (el bucket es privado)
+    document.querySelectorAll('.comprobante-link').forEach(function(a){
+      a.addEventListener('click', async function(e){
+        e.preventDefault();
+        var path = a.getAttribute('data-path');
+        var { data, error } = await supa.storage.from('comprobantes').createSignedUrl(path, 300); // 5 min
+        if(error || !data){ alert('No se pudo generar el link del comprobante.'); return; }
+        window.open(data.signedUrl, '_blank');
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  // Sesión persistente: si ya estabas logueado, entrar directo.
+  supa.auth.getSession().then(function(res){
+    if(res.data.session) showDashboard();
+    else showLogin();
+  });
+</script>
+
+</body>
+</html>

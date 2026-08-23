@@ -10,9 +10,17 @@
     });
   }
 
-  // ==== CONEXIÓN A GOOGLE SHEETS ====
-  // Pegá acá la URL de tu Web App de Google Apps Script (ver instrucciones que te pasé aparte).
-  var SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyiizuzfiDQn8a7sDmgjyulZSefquJLMfrxvaZbP3rfpniEpK4TrUH3joIZ2Pupf7NL2A/exec';
+  // ==== CONEXIÓN A SUPABASE ====
+  // Reemplaza al Web App de Apps Script. Completá estos 3 valores:
+  //  - SUPABASE_URL y SUPABASE_ANON_KEY: Supabase Dashboard > Settings > API Keys
+  //    (usá la "anon public" key, NUNCA la service_role acá)
+  //  - RESERVAS_FUNCTION_URL: la URL de la Edge Function "reservas" una vez
+  //    deployada (Supabase Dashboard > Edge Functions > reservas > Invoke URL)
+  var SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+  var SUPABASE_ANON_KEY = 'TU-ANON-KEY-ACA';
+  var RESERVAS_FUNCTION_URL = SUPABASE_URL + '/functions/v1/reservas';
+
+  var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
   var COOKIE_CONSENT_KEY = 'nc_cookie_consent';
@@ -50,8 +58,8 @@
   }
 
   // Pegá acá tu site key de reCAPTCHA v3 (la secret key correspondiente va
-  // en Script Properties del Apps Script, no acá). Mientras diga
-  // "PEGA_ACA", no se carga el script ni se manda token con la reserva.
+  // en los Secrets de la Edge Function, no acá). Mientras diga "PEGA_ACA",
+  // no se carga el script ni se manda token con la reserva.
   var RECAPTCHA_SITE_KEY = '6LeJUXEtAAAAAGr3k5GKmyV0z5QtlOc1KuWNPErw';
 
   function cargarRecaptchaScript(){
@@ -83,9 +91,7 @@
     return s;
   }
 
-  // Genera un token de reCAPTCHA v3 para la acción indicada. Devuelve ''
-  // si no hay site key configurada o si algo falla (el backend trata un
-  // token vacío como sospechoso).
+  // Genera un token de reCAPTCHA v3 para la acción indicada.
   function obtenerTokenRecaptcha(accion){
     if(!RECAPTCHA_SITE_KEY || RECAPTCHA_SITE_KEY.indexOf('PEGA_ACA') !== -1) return Promise.resolve('');
     if(typeof grecaptcha === 'undefined') return Promise.resolve('');
@@ -103,45 +109,58 @@
     });
   }
 
-  // Envía el payload al Web App de Apps Script y devuelve una Promise<boolean>
-  // que resuelve a true solo si el servidor confirmó que guardó los datos.
-  async function sendToSheet(payload){
-    if(!SHEETS_WEBHOOK_URL || SHEETS_WEBHOOK_URL.indexOf('PEGA_ACA') !== -1){
-      console.warn('SHEETS_WEBHOOK_URL sin configurar: los datos no se están guardando en ninguna planilla todavía.');
-      return null;
-    }
+  // Envía el payload a la Edge Function "reservas" y devuelve una
+  // Promise<object|null> que resuelve al JSON de respuesta, o null si
+  // falló la request en sí (red caída, etc).
+  async function sendToBackend(payload){
     try{
       if(payload){
         if(payload.correo !== undefined) payload.correo = sanitizarCampoCorreo(payload.correo);
         if(payload.whatsapp !== undefined) payload.whatsapp = sanitizarCampoWhatsApp(payload.whatsapp);
       }
-      var res = await fetch(SHEETS_WEBHOOK_URL, {
+      var res = await fetch(RESERVAS_FUNCTION_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'apikey': SUPABASE_ANON_KEY
+        },
         body: JSON.stringify(payload)
       });
-      if(!res.ok) return null;
-      var data = await res.json();
-      return data || null;
+      var data = await res.json().catch(function(){ return null; });
+      return data;
     }catch(e){
-      console.error('Error enviando datos a la planilla', e);
+      console.error('Error enviando datos al backend', e);
       return null;
     }
   }
 
+  // Sube el comprobante directo a Supabase Storage (bucket privado
+  // 'comprobantes') desde el navegador, y devuelve el path guardado.
+  // Reemplaza el envío de comprobanteBase64 dentro del POST: ahora el
+  // archivo va aparte, más liviano y sin límites de tamaño de payload JSON.
+  async function subirComprobante(file, fileName){
+    var ext = (fileName.split('.').pop() || 'bin').toLowerCase();
+    var path = 'reservas/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    var { error } = await supabaseClient.storage.from('comprobantes').upload(path, file, {
+      contentType: file.type || 'application/octet-stream',
+      upsert: false
+    });
+    if(error){
+      console.error('Error subiendo comprobante', error);
+      return null;
+    }
+    return path;
+  }
+
   var RESERVA_INFO = {};
-  var COMPROBANTE_DATA = null;
+  var COMPROBANTE_FILE = null; // File original, se sube a Storage recién al confirmar el envío
   var PLAN_PRICES = { 'Oficina': 18000, 'Gaming': 25000, 'Gaming Plus': 45000 };
 
   // Contador opcional del hero. Completá este número SOLO si es real y
-  // verificable (ej: cantidad de reservas confirmadas en la planilla). Si
-  // lo dejás en 0, el bloque "+XX PCs optimizadas" no se muestra.
+  // verificable. Si lo dejás en 0, el bloque "+XX PCs optimizadas" no se muestra.
   var PCS_OPTIMIZADAS = 0;
 
-  // Si el <video> de #resultados no puede cargar el archivo (src placeholder
-  // o archivo faltante), mostramos el fallback con el link a TikTok en su
-  // lugar, en vez de dejar un recuadro vacío o roto. Si no hay contenido
-  // real cargado, el bloque completo se oculta para mantener el sitio limpio.
   window.mostrarFallbackVideo = function(videoEl){
     try{
       videoEl.style.display = 'none';
@@ -213,19 +232,9 @@
 
   try{ document.getElementById('year').textContent = new Date().getFullYear(); }catch(e){}
 
-  // ---- Turnos predefinidos ----
-  // Lunes a viernes 18:00-22:00, sábados y domingos 13:00-18:00, cada 15 min.
-  // La duración de cada plan determina cuántos turnos consecutivos ocupa.
-  //
-  // ⚠️ Si cambiás esto, cambiá también PLAN_DURATION en el .gs (Code.gs, línea ~12).
-  // Este valor es solo un fallback: en cuanto responde el doGet, se pisa con
-  // planDuration que devuelve el propio Apps Script (fuente de verdad real),
-  // así el front no puede quedar desincronizado del back. Ver actualizarPlanDurationDesdeBackend().
+  // ⚠️ Si cambiás esto, cambiá también PLAN_DURATION en supabase/functions/reservas/index.ts
   var PLAN_DURATION = { 'Oficina': 20, 'Gaming': 30, 'Gaming Plus': 45 };
 
-  // Se sobreescribe con lo que devuelva el backend la primera vez que
-  // consultamos turnos (ver fetchBookedFromSheet). Mientras no haya
-  // respondido, se usa el fallback hardcodeado de arriba.
   function actualizarPlanDurationDesdeBackend(planDuration){
     if(!planDuration || typeof planDuration !== 'object') return;
     Object.keys(planDuration).forEach(function(k){
@@ -241,7 +250,7 @@
 
   function dayRange(dateStr){
     var d = new Date(dateStr + 'T00:00:00');
-    var day = d.getDay(); // 0 domingo ... 6 sábado
+    var day = d.getDay();
     if(day === 0 || day === 6) return { start: 13*60, end: 18*60 };
     return { start: 18*60, end: 22*60 };
   }
@@ -250,17 +259,18 @@
     return aStart < bEnd && bStart < aEnd;
   }
 
-  // Antelación mínima para poder reservar un turno hoy mismo: no tiene
-  // sentido operativo ofrecer un turno que empieza en 10 minutos, hace
-  // falta tiempo para coordinar (AnyDesk/Discord, etc.).
   var ANTELACION_MINIMA_MIN = 120;
 
-  // Trae del Google Sheet (vía Apps Script doGet) los turnos ya reservados
-  // para una fecha dada. Devuelve una Promise que resuelve a un array
-  // de objetos { start, duration } (en minutos).
-  function fetchBookedFromSheet(dateStr){
-    var url = SHEETS_WEBHOOK_URL + '?fecha=' + encodeURIComponent(dateStr);
-    return fetch(url, { method: 'GET' })
+  // Trae de la Edge Function los turnos ya reservados para una fecha dada.
+  function fetchBookedFromBackend(dateStr){
+    var url = RESERVAS_FUNCTION_URL + '?fecha=' + encodeURIComponent(dateStr);
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      }
+    })
       .then(function(res){
         if(!res.ok) throw new Error('Respuesta HTTP ' + res.status);
         return res.json();
@@ -272,15 +282,12 @@
       });
   }
 
-  // ---- Badge "turnos disponibles hoy" (hero + sticky-cta) ----
-  // Reusa fetchBookedFromSheet, no dispara un fetch nuevo/paralelo: se pide
-  // una sola vez la fecha de hoy y se pinta en todos los data-turnos-hoy.
   function contarTurnosDisponiblesHoy(booked){
     var today = new Date().toISOString().slice(0,10);
     var range = dayRange(today);
     var now = new Date();
     var nowMins = now.getHours() * 60 + now.getMinutes();
-    var duration = PLAN_DURATION['Gaming']; // duración de referencia (30 min) para el conteo general
+    var duration = PLAN_DURATION['Gaming'];
     var count = 0;
     for(var t = range.start; t + duration <= range.end; t += 15){
       if(t <= nowMins + ANTELACION_MINIMA_MIN) continue;
@@ -294,25 +301,21 @@
     var badges = document.querySelectorAll('[data-turnos-hoy]');
     if(!badges.length) return;
     var today = new Date().toISOString().slice(0,10);
-    fetchBookedFromSheet(today).then(function(booked){
+    fetchBookedFromBackend(today).then(function(booked){
       var n = contarTurnosDisponiblesHoy(booked);
       badges.forEach(function(el){
         if(n > 0){
           el.textContent = n === 1 ? 'Queda 1 turno disponible hoy' : 'Quedan ' + n + ' turnos disponibles hoy';
           el.style.display = '';
         } else {
-          el.style.display = 'none'; // sin turnos hoy: mejor ocultar el badge que desalentar con un "0"
+          el.style.display = 'none';
         }
       });
     }).catch(function(){
-      // Si el webhook no responde (sin conexión, planilla caída, etc.) el
-      // badge simplemente no se muestra: no es un dato crítico para reservar.
       badges.forEach(function(el){ el.style.display = 'none'; });
     });
   }
 
-  // Token para evitar que una respuesta vieja (de una fecha/plan anterior)
-  // pise el resultado de la consulta más reciente si el usuario cambia rápido.
   var slotsRequestToken = 0;
 
   function renderSlots(){
@@ -332,8 +335,8 @@
     horarioInput.value = '';
     hint.textContent = 'Buscando turnos disponibles...';
 
-    fetchBookedFromSheet(dateStr).then(function(booked){
-      if(thisRequest !== slotsRequestToken) return; // llegó tarde, ya no aplica
+    fetchBookedFromBackend(dateStr).then(function(booked){
+      if(thisRequest !== slotsRequestToken) return;
       pintarSlots(dateStr, booked);
     }).catch(function(err){
       if(thisRequest !== slotsRequestToken) return;
@@ -426,9 +429,6 @@
     initSpecularButtons();
     initSpotlightCards();
 
-    // Contador opcional "+XX PCs optimizadas". Completá PCS_OPTIMIZADAS más
-    // abajo SOLO con un número real y verificable; si queda en 0 el bloque
-    // no se muestra.
     var pcsEl = document.getElementById('pcsOptimizadas');
     if(pcsEl && PCS_OPTIMIZADAS > 0){
       var countEl = pcsEl.querySelector('[data-count-to]');
@@ -436,7 +436,6 @@
         countEl.setAttribute('data-count-to', PCS_OPTIMIZADAS);
         countEl.setAttribute('data-start', '0');
         if('IntersectionObserver' in window){
-          // Si ya está visible en el hero, animar manualmente.
           requestAnimationFrame(function(){ animateCount(countEl); });
         } else {
           countEl.textContent = PCS_OPTIMIZADAS;
@@ -449,11 +448,9 @@
   function initSpecularButtons(){
     var buttons = document.querySelectorAll('.btn-specular');
     if(!buttons.length) return;
-
     buttons.forEach(function(btn){
       btn.style.setProperty('--specular-x','50%');
       btn.style.setProperty('--specular-y','40%');
-
       btn.addEventListener('pointermove', function(event){
         var rect = btn.getBoundingClientRect();
         var x = event.clientX - rect.left;
@@ -463,7 +460,6 @@
         btn.style.setProperty('--specular-x', (px * 100).toFixed(2) + '%');
         btn.style.setProperty('--specular-y', (py * 100).toFixed(2) + '%');
       });
-
       btn.addEventListener('pointerleave', function(){
         btn.style.setProperty('--specular-x','50%');
         btn.style.setProperty('--specular-y','40%');
@@ -474,13 +470,11 @@
   function initSpotlightCards(){
     var cards = document.querySelectorAll('.spotlight-card');
     if(!cards.length) return;
-
     cards.forEach(function(card){
       var color = card.getAttribute('data-spotlight-color') || 'rgba(79, 168, 255, 0.14)';
       card.style.setProperty('--spotlight-color', color);
       card.style.setProperty('--mouse-x', '50%');
       card.style.setProperty('--mouse-y', '50%');
-
       card.addEventListener('pointermove', function(event){
         var rect = card.getBoundingClientRect();
         var x = event.clientX - rect.left;
@@ -490,7 +484,6 @@
         card.style.setProperty('--mouse-x', px.toFixed(2) + '%');
         card.style.setProperty('--mouse-y', py.toFixed(2) + '%');
       });
-
       card.addEventListener('pointerleave', function(){
         card.style.setProperty('--mouse-x', '50%');
         card.style.setProperty('--mouse-y', '50%');
@@ -686,7 +679,6 @@
     }
   }
 
-  // ---- Plan selection from pricing cards ----
   window.selectPlan = function(planName){
     try{
       var select = document.getElementById('plan');
@@ -698,7 +690,6 @@
     }catch(e){ console.error(e); }
   };
 
-  // ---- Multi-step form ----
   var CURRENT_STEP = 1;
 
   function showStep(n){
@@ -786,11 +777,6 @@
   window.submitReserva = async function(){
     if(!validateStep(3)) return;
 
-    // Honeypot: si este campo oculto llegó completo, lo llenó un bot.
-    // Simulamos que el envío fue exitoso (avanzamos al paso 4 sin mandar
-    // nada a la Sheet) para no delatar el mecanismo: si devolviéramos un
-    // error, un bot más sofisticado podría usar esa respuesta para
-    // detectar el honeypot y ajustar su comportamiento.
     var honeypotEl = document.getElementById('empresaWeb');
     if(honeypotEl && honeypotEl.value){
       showStep(4);
@@ -799,8 +785,6 @@
       return;
     }
 
-    // NOTA: no hay backend propio. Este envío va directo a tu Google Sheet
-    // a través del Web App de Apps Script configurado en SHEETS_WEBHOOK_URL.
     var sendErrorEl = document.getElementById('sendErrorStep3');
     var btn = document.getElementById('btnSubmitReserva');
     if(sendErrorEl) sendErrorEl.classList.remove('show');
@@ -814,7 +798,23 @@
       var planName = planSelect ? planSelect.value : '';
       var comentariosEl = document.getElementById('comentarios');
       var recaptchaToken = await obtenerTokenRecaptcha('reserva');
-      result = await sendToSheet({
+
+      // 1. Subir el comprobante directo a Storage (si hay uno elegido)
+      var comprobantePath = null;
+      if(COMPROBANTE_FILE){
+        if(btn) btn.textContent = 'Subiendo comprobante...';
+        comprobantePath = await subirComprobante(COMPROBANTE_FILE, COMPROBANTE_FILE.name);
+        if(!comprobantePath){
+          if(btn){ btn.disabled = false; btn.textContent = 'Enviar comprobante'; }
+          if(sendErrorEl) sendErrorEl.classList.add('show');
+          return;
+        }
+      }
+
+      if(btn) btn.textContent = 'Enviando...';
+
+      // 2. Crear la reserva con el path del comprobante ya subido
+      result = await sendToBackend({
         type: 'reserva',
         nombreCompleto: RESERVA_INFO.nombreCompleto || '',
         correo: RESERVA_INFO.correo || '',
@@ -824,9 +824,7 @@
         fecha: fecha,
         horario: horario,
         comentarios: comentariosEl ? comentariosEl.value : '',
-        comprobanteBase64: COMPROBANTE_DATA ? COMPROBANTE_DATA.base64 : '',
-        comprobanteName: COMPROBANTE_DATA ? COMPROBANTE_DATA.name : '',
-        comprobanteType: COMPROBANTE_DATA ? COMPROBANTE_DATA.type : '',
+        comprobantePath: comprobantePath,
         recaptchaToken: recaptchaToken
       });
     }catch(e){
@@ -886,7 +884,7 @@
 
     var result = null;
     try{
-      result = await sendToSheet({
+      result = await sendToBackend({
         type: 'review',
         nombreCompleto: nameEl.value.trim(),
         rating: ratingEl.value,
@@ -913,12 +911,50 @@
     document.querySelectorAll('input[name="reviewRating"]').forEach(function(r){ r.checked = false; if(r.parentElement) r.parentElement.classList.remove('selected'); });
   };
 
+  window.submitExtraData = async function(){
+    var msgEl = document.getElementById('extraDataMsg');
+    var errEl = document.getElementById('sendErrorExtra');
+    var btn = document.getElementById('btnSubmitExtra');
+    if(errEl) errEl.classList.remove('show');
+
+    var correo = RESERVA_INFO.correo || '';
+    var nombreCompleto = RESERVA_INFO.nombreCompleto || '';
+    var pais = (document.getElementById('pais') || {}).value || '';
+    var edad = (document.getElementById('edadExtra') || {}).value || '';
+    var genero = (document.getElementById('generoExtra') || {}).value || '';
+    var juegoExtra = (document.getElementById('juegoExtra') || {}).value || '';
+
+    if(btn){ btn.disabled = true; btn.textContent = 'Enviando...'; }
+
+    var result = await sendToBackend({
+      type: 'extra',
+      correo: correo,
+      nombreCompleto: nombreCompleto,
+      pais: pais,
+      edad: edad,
+      genero: genero,
+      juegoExtra: juegoExtra
+    });
+
+    if(btn){ btn.disabled = false; btn.textContent = 'Enviar'; }
+
+    if(!result || !result.ok){
+      if(errEl) errEl.classList.add('show');
+      return;
+    }
+    if(msgEl) msgEl.style.display = 'block';
+    if(btn) btn.style.display = 'none';
+  };
+
+  // fileChosen: ahora solo valida y guarda el File original en memoria
+  // (COMPROBANTE_FILE). La subida real a Storage pasa en submitReserva(),
+  // recién cuando el usuario confirma el envío.
   window.fileChosen = function(input){
     try{
       var fname = document.getElementById('fname');
       var errEl = document.getElementById('uploadFileError');
-      var MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB, para archivos que no se pueden comprimir (PDF, etc)
-      var MAX_IMG_DIM = 1600; // px, lado más largo
+      var MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+      var TIPOS_VALIDOS = ['image/jpeg', 'image/png', 'application/pdf'];
 
       if(errEl){ errEl.textContent = ''; errEl.classList.remove('show'); }
 
@@ -929,7 +965,7 @@
 
       function showUploadError(text){
         if(fname) fname.textContent = '';
-        COMPROBANTE_DATA = null;
+        COMPROBANTE_FILE = null;
         try{ input.value = ''; }catch(e2){}
         if(errEl){
           errEl.textContent = text;
@@ -940,8 +976,19 @@
       if(fname && input.files && input.files[0]){
         var file = input.files[0];
 
-        if(file.type && file.type.indexOf('image/') === 0){
-          // Imagen: redimensionar con canvas antes de convertir a base64
+        if(TIPOS_VALIDOS.indexOf(file.type) === -1){
+          showUploadError('Formato no permitido. Subí una imagen (JPG/PNG) o un PDF.');
+          return;
+        }
+        if(file.size > MAX_FILE_SIZE){
+          showUploadError('El archivo pesa más de 8MB. Subí uno más liviano para poder enviarlo.');
+          return;
+        }
+
+        if(file.type.indexOf('image/') === 0){
+          // Redimensionar con canvas antes de guardar, igual que antes,
+          // para no subir fotos de 12MB directas de un celular.
+          var MAX_IMG_DIM = 1600;
           var imgUrl = URL.createObjectURL(file);
           var img = new Image();
           img.onload = function(){
@@ -954,11 +1001,10 @@
             canvas.height = newH;
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, newW, newH);
-            var dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-            var base64 = dataUrl.split(',')[1] || '';
-            var approxBytes = Math.round(base64.length * 3 / 4);
-            COMPROBANTE_DATA = { base64: base64, name: file.name, type: 'image/jpeg' };
-            fname.textContent = file.name + ' (' + formatSize(approxBytes) + ')';
+            canvas.toBlob(function(blob){
+              COMPROBANTE_FILE = new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+              fname.textContent = file.name + ' (' + formatSize(blob.size) + ')';
+            }, 'image/jpeg', 0.75);
             URL.revokeObjectURL(imgUrl);
           };
           img.onerror = function(){
@@ -967,18 +1013,8 @@
           };
           img.src = imgUrl;
         }else{
-          // PDF u otro tipo: no se puede comprimir con canvas, validar tamaño máximo
-          if(file.size > MAX_FILE_SIZE){
-            showUploadError('El archivo pesa más de 8MB. Subí uno más liviano para poder enviarlo.');
-            return;
-          }
-          var reader = new FileReader();
-          reader.onload = function(){
-            var base64 = String(reader.result).split(',')[1] || '';
-            COMPROBANTE_DATA = { base64: base64, name: file.name, type: file.type };
-            fname.textContent = file.name + ' (' + formatSize(file.size) + ')';
-          };
-          reader.readAsDataURL(file);
+          COMPROBANTE_FILE = file;
+          fname.textContent = file.name + ' (' + formatSize(file.size) + ')';
         }
       }
     }catch(e){}
@@ -999,7 +1035,6 @@
   var form = document.getElementById('reserva-form');
   if(form){ form.addEventListener('submit', function(e){ e.preventDefault(); }); }
 
-  // ---- Count-up numbers on scroll ----
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function animateCount(el){
