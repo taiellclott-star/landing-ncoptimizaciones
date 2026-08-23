@@ -92,6 +92,17 @@
 }
 </script>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  // Fallback: si unpkg falla, probamos con jsdelivr
+  window.addEventListener('error', function(e){
+    if(e.target && e.target.tagName === 'SCRIPT' && e.target.src.indexOf('unpkg.com/@supabase') !== -1){
+      var fallback = document.createElement('script');
+      fallback.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      document.head.appendChild(fallback);
+    }
+  }, true);
+</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
