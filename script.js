@@ -11,13 +11,8 @@
   }
 
   // ==== CONEXIÓN A SUPABASE ====
-  // Reemplaza al Web App de Apps Script. Completá estos 3 valores:
-  //  - SUPABASE_URL y SUPABASE_ANON_KEY: Supabase Dashboard > Settings > API Keys
-  //    (usá la "anon public" key, NUNCA la service_role acá)
-  //  - RESERVAS_FUNCTION_URL: la URL de la Edge Function "reservas" una vez
-  //    deployada (Supabase Dashboard > Edge Functions > reservas > Invoke URL)
-  var SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
-  var SUPABASE_ANON_KEY = 'TU-ANON-KEY-ACA';
+  var SUPABASE_URL = 'https://ghegwbgxxpvpppdlsumm.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_lTl5scPuFt9C8F2t1LkY2Q_OsZL2MGS';
   var RESERVAS_FUNCTION_URL = SUPABASE_URL + '/functions/v1/reservas';
 
   var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
