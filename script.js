@@ -15,7 +15,12 @@
   var SUPABASE_ANON_KEY = 'sb_publishable_lTl5scPuFt9C8F2t1LkY2Q_OsZL2MGS';
   var RESERVAS_FUNCTION_URL = SUPABASE_URL + '/functions/v1/reservas';
 
-  var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  var supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function')
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+  if(!supabaseClient){
+    console.error('No se pudo inicializar Supabase: la librería no cargó (revisá el script de supabase-js en el <head>).');
+  }
 
   var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
   var COOKIE_CONSENT_KEY = 'nc_cookie_consent';
@@ -135,6 +140,10 @@
   // Reemplaza el envío de comprobanteBase64 dentro del POST: ahora el
   // archivo va aparte, más liviano y sin límites de tamaño de payload JSON.
   async function subirComprobante(file, fileName){
+    if(!supabaseClient){
+      console.error('Supabase no está inicializado, no se puede subir el comprobante.');
+      return null;
+    }
     var ext = (fileName.split('.').pop() || 'bin').toLowerCase();
     var path = 'reservas/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
     var { error } = await supabaseClient.storage.from('comprobantes').upload(path, file, {
