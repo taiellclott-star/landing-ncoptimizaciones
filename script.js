@@ -675,15 +675,20 @@
   }
 
   window.selectPlan = function(planName){
-    try{
-      var select = document.getElementById('plan');
-      var chip = document.getElementById('planChip');
-      if(select) select.value = planName;
-      if(chip) chip.textContent = 'Plan: ' + planName;
-      var target = document.getElementById('formulario');
-      if(target) target.scrollIntoView({behavior:'smooth'});
-    }catch(e){ console.error(e); }
-  };
+  try{
+    var select = document.getElementById('plan');
+    var chip = document.getElementById('planChip');
+    if(select) select.value = planName;
+    if(chip) chip.textContent = 'Plan: ' + planName;
+    var target = document.getElementById('formulario');
+    if(target){
+      var header = document.querySelector('header');
+      var headerHeight = header ? header.getBoundingClientRect().height : 0;
+      var targetTop = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+      window.scrollTo({ top: targetTop, behavior: 'smooth' });
+    }
+  }catch(e){ console.error(e); }
+};
 
   var CURRENT_STEP = 1;
 
