@@ -60,8 +60,8 @@
   // Pegá acá tu site key de reCAPTCHA v3 (la secret key correspondiente va
   // en los Secrets de la Edge Function, no acá). Mientras diga "PEGA_ACA",
   // no se carga el script ni se manda token con la reserva.
-  var RECAPTCHA_SITE_KEY = '6LeJUXEtAAAAACwzdUCE_-5SNND_VEsWdrRh4mu1';
-
+  var RECAPTCHA_SITE_KEY = '6LeJUXEtAAAAAGr3k5GKmyV0z5QtlOc1KuWNPErw';
+  
   function cargarRecaptchaScript(){
     if(!RECAPTCHA_SITE_KEY || RECAPTCHA_SITE_KEY.indexOf('PEGA_ACA') !== -1) return;
     if(document.getElementById('recaptcha-v3-script')) return;
