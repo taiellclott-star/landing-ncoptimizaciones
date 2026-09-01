@@ -10,16 +10,19 @@
     });
   }
 
-  // ==== CONEXIÓN A SUPABASE ====
-  var SUPABASE_URL = 'https://ghegwbgxxpvpppdlsumm.supabase.co';
-  var SUPABASE_ANON_KEY = 'sb_publishable_lTl5scPuFt9C8F2t1LkY2Q_OsZL2MGS';
-  var RESERVAS_FUNCTION_URL = SUPABASE_URL + '/functions/v1/reservas';
+  // ==== CONFIGURACIÓN SEGURA ====
+  var NC_CONFIG = window.NC_CONFIG || {};
+  var SUPABASE_URL = (NC_CONFIG.SUPABASE_URL || '').replace(/\/$/, '');
+  var SUPABASE_ANON_KEY = NC_CONFIG.SUPABASE_ANON_KEY || '';
+  var RECAPTCHA_SITE_KEY = NC_CONFIG.RECAPTCHA_SITE_KEY || '';
+  var RESERVAS_FUNCTION_URL = SUPABASE_URL ? (SUPABASE_URL + '/functions/v1/reservas') : '';
 
-  var supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function')
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : null;
+  var supabaseClient = null;
+  if(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase && typeof window.supabase.createClient === 'function'){
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
   if(!supabaseClient){
-    console.error('No se pudo inicializar Supabase: la librería no cargó (revisá el script de supabase-js en el <head>).');
+    console.warn('Supabase no está configurado. Completá la config local para habilitar reservas y uploads.');
   }
 
   var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
@@ -57,11 +60,6 @@
     if(value === 'accepted') cargarGoogleAnalytics();
   }
 
-  // Pegá acá tu site key de reCAPTCHA v3 (la secret key correspondiente va
-  // en los Secrets de la Edge Function, no acá). Mientras diga "PEGA_ACA",
-  // no se carga el script ni se manda token con la reserva.
-  var RECAPTCHA_SITE_KEY = '6LeJUXEtAAAAAGr3k5GKmyV0z5QtlOc1KuWNPErw';
-  
   function cargarRecaptchaScript(){
     if(!RECAPTCHA_SITE_KEY || RECAPTCHA_SITE_KEY.indexOf('PEGA_ACA') !== -1) return;
     if(document.getElementById('recaptcha-v3-script')) return;
@@ -114,6 +112,9 @@
   // falló la request en sí (red caída, etc).
   async function sendToBackend(payload){
     try{
+      if(!RESERVAS_FUNCTION_URL || !SUPABASE_ANON_KEY){
+        return { ok: false, reason: 'missing_config', error: 'Falta configurar Supabase en config.js.' };
+      }
       if(payload){
         if(payload.correo !== undefined) payload.correo = sanitizarCampoCorreo(payload.correo);
         if(payload.whatsapp !== undefined) payload.whatsapp = sanitizarCampoWhatsApp(payload.whatsapp);
@@ -267,6 +268,9 @@
 
   // Trae de la Edge Function los turnos ya reservados para una fecha dada.
   function fetchBookedFromBackend(dateStr){
+    if(!RESERVAS_FUNCTION_URL || !SUPABASE_ANON_KEY){
+      return Promise.resolve([]);
+    }
     var url = RESERVAS_FUNCTION_URL + '?fecha=' + encodeURIComponent(dateStr);
     return fetch(url, {
       method: 'GET',

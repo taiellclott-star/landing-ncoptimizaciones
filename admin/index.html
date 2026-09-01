@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Panel · NC Optimizaciones</title>
 <meta name="robots" content="noindex, nofollow">
+<script src="../config.js"></script>
+<script>
+  window.NC_CONFIG = window.NC_CONFIG || {};
+  window.NC_CONFIG.SUPABASE_URL = window.NC_CONFIG.SUPABASE_URL || 'https://TU_PROYECTO.supabase.co';
+  window.NC_CONFIG.SUPABASE_ANON_KEY = window.NC_CONFIG.SUPABASE_ANON_KEY || 'TU_ANON_KEY';
+</script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
   // Fallback: si unpkg falla, probamos con jsdelivr
@@ -96,10 +102,17 @@
 </div>
 
 <script>
-  var SUPABASE_URL = 'https://ghegwbgxxpvpppdlsumm.supabase.co';
-  var SUPABASE_ANON_KEY = 'sb_publishable_lTl5scPuFt9C8F2t1LkY2Q_OsZL2MGS';
+  var NC_CONFIG = window.NC_CONFIG || {};
+  var SUPABASE_URL = (NC_CONFIG.SUPABASE_URL || '').replace(/\/$/, '');
+  var SUPABASE_ANON_KEY = NC_CONFIG.SUPABASE_ANON_KEY || '';
 
-  var supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  var supa = SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
+  if (!supa) {
+    console.warn('Falta la configuración de Supabase en config.js para el panel admin.');
+  }
 
   var loginBox = document.getElementById('loginBox');
   var dashboard = document.getElementById('dashboard');
@@ -118,6 +131,11 @@
 
   document.getElementById('loginBtn').addEventListener('click', async function(){
     loginError.style.display = 'none';
+    if(!supa){
+      loginError.textContent = 'Falta la configuración de Supabase. Revisá config.js.';
+      loginError.style.display = 'block';
+      return;
+    }
     var email = document.getElementById('loginEmail').value.trim();
     var password = document.getElementById('loginPass').value;
     var { error } = await supa.auth.signInWithPassword({ email: email, password: password });
@@ -138,6 +156,11 @@
   document.getElementById('filtroEstado').addEventListener('change', cargarReservas);
 
   async function cargarReservas(){
+    if(!supa){
+      document.getElementById('empty').style.display = 'block';
+      document.getElementById('empty').textContent = 'Configuración de Supabase faltante. Revisá config.js.';
+      return;
+    }
     var body = document.getElementById('tablaBody');
     var empty = document.getElementById('empty');
     body.innerHTML = '';
@@ -223,10 +246,14 @@
   }
 
   // Sesión persistente: si ya estabas logueado, entrar directo.
-  supa.auth.getSession().then(function(res){
-    if(res.data.session) showDashboard();
-    else showLogin();
-  });
+  if(supa){
+    supa.auth.getSession().then(function(res){
+      if(res.data.session) showDashboard();
+      else showLogin();
+    });
+  } else {
+    showLogin();
+  }
 </script>
 
 </body>
